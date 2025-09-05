@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC20Lockable",
+    "function": "releaseLock",
+    "explanation": "Comments describe unlocking a single lock at index i, but code loops through all locks.",
+    "contract_code": "\n=== Implementation of Function releaseLock(address) ===\nfunction releaseLock(address from) external onlyOwner returns (bool success){\r\n        require(_locks[from].length > 0, \"There is not lock info.\");\r\n        for (uint256 i = _locks[from].length; i > 0; i--) {\r\n            _unlock(from, i - 1);\r\n        }\r\n        success = true;\r\n    }\n    \n=== Functions that function releaseLock internally calls ===\nfunction _unlock(address from, uint256 index) internal returns (bool success) {\r\n        LockInfo storage lock = _locks[from][index];\r\n        _totalLocked[from] = _totalLocked[from] - lock._amount;\r\n        emit Unlock(from, lock._amount);\r\n        _locks[from][index] = _locks[from][_locks[from].length - 1];\r\n        _locks[from].pop();\r\n        success = true;\r\n    }\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function releaseLock(address from) external onlyOwner returns (bool success){\n        require(_locks[from].length > 0, \"There is not lock info.\");\n        uint256 i = _locks[from].length - 1;\n        _unlock(from, i);\n        success = true;\n    }"
+    }
+  }
+]

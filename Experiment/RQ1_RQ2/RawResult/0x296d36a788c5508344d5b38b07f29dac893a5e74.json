@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "Address",
+    "function": "verifyCallResultFromTarget",
+    "explanation": "Missing contract check on successful calls with non-empty returndata",
+    "contract_code": "\n=== Implementation of Function verifyCallResultFromTarget(address,bool,bytes,string) ===\nfunction verifyCallResultFromTarget(\n        address target,\n        bool success,\n        bytes memory returndata,\n        string memory errorMessage\n    ) internal view returns (bytes memory) {\n        if (success) {\n            if (returndata.length == 0) {\n                require(isContract(target), \"Address: call to non-contract\");\n            }\n            return returndata;\n        } else {\n            _revert(returndata, errorMessage);\n        }\n    }\n    \n=== Functions that function verifyCallResultFromTarget internally calls ===\nfunction _revert(bytes memory returndata, string memory errorMessage) private pure {\n        if (returndata.length > 0) {\n            assembly {\n                let returndata_size := mload(returndata)\n                revert(add(32, returndata), returndata_size)\n            }\n        } else {\n            revert(errorMessage);\n        }\n    }\nfunction isContract(address account) internal view returns (bool) {\n\n        return account.code.length > 0;\n    }",
+    "rewritten_code": {
+      "verifyCallResultFromTarget(address,bool,bytes,string)": "function verifyCallResultFromTarget(\n        address target,\n        bool success,\n        bytes memory returndata,\n        string memory errorMessage\n    ) internal view returns (bytes memory) {\n        require(isContract(target), \"Address: call to non-contract\");\n        if (success) {\n            return returndata;\n        } else {\n            _revert(returndata, errorMessage);\n        }\n    }"
+    }
+  },
+  {
+    "contract": "Address",
+    "function": "functionCall",
+    "explanation": "Missing contract existence check before low-level call",
+    "contract_code": "\n=== Implementation of Function functionCall(address,bytes) ===\nfunction functionCall(address target, bytes memory data) internal returns (bytes memory) {\n        return functionCallWithValue(target, data, 0, \"Address: low-level call failed\");\n    }\n    \n=== Functions that function functionCall internally calls ===\nfunction functionCallWithValue(\n        address target,\n        bytes memory data,\n        uint256 value,\n        string memory errorMessage\n    ) internal returns (bytes memory) {\n        require(address(this).balance >= value, \"Address: insufficient balance for call\");\n        (bool success, bytes memory returndata) = target.call{value: value}(data);\n        return verifyCallResultFromTarget(target, success, returndata, errorMessage);\n    }",
+    "rewritten_code": {
+      "functionCall(address,bytes)": "function functionCall(address target, bytes memory data) internal returns (bytes memory) {\n        require(isContract(target), \"Address: call to non-contract\");\n        return functionCallWithValue(target, data, 0, \"Address: low-level call failed\");\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC20PresetPauserCapped",
+    "function": "constructor",
+    "explanation": "PAUSER_ROLE granted to minter parameter instead of contract deployer",
+    "contract_code": "\n=== Implementation of Function constructor(string,string,uint256,address) ===\nconstructor(\r\n        string memory name,\r\n        string memory symbol,\r\n        uint256 cap,\r\n        address minter\r\n    ) ERC20(name, symbol) ERC20Capped(cap) {\r\n        _setupRole(PAUSER_ROLE, minter);\r\n    }\n    \n=== Functions that function constructor internally calls ===\nconstructor(string memory name_, string memory symbol_) public {\r\n        _name = name_;\r\n        _symbol = symbol_;\r\n        _decimals = 18;\r\n    }\nconstructor(uint256 cap_) internal {\r\n        require(cap_ > 0, \"ERC20Capped: cap is 0\");\r\n        _cap = cap_;\r\n    }\nfunction _setupRole(bytes32 role, address account) internal virtual {\r\n        _grantRole(role, account);\r\n    }",
+    "rewritten_code": {
+      "constructor": "constructor(\n        string memory name,\n        string memory symbol,\n        uint256 cap,\n        address minter\n    ) ERC20(name, symbol) ERC20Capped(cap) {\n        _setupRole(PAUSER_ROLE, _msgSender());\n    }"
+    }
+  }
+]

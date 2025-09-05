@@ -1,0 +1,38 @@
+[
+  {
+    "contract": "ERC721A",
+    "function": "tokenOfOwnerByIndex",
+    "explanation": "Loop counts minted tokens instead of valid owned tokens, causing potential index mismatch",
+    "contract_code": "\n=== Implementation of Function tokenOfOwnerByIndex(address,uint256) ===\nfunction tokenOfOwnerByIndex(address owner, uint256 index)\r\n        public\r\n        view\r\n        override\r\n        returns (uint256)\r\n    {\r\n        if (index >= balanceOf(owner)) revert OwnerIndexOutOfBounds();\r\n        uint256 numMintedSoFar = _currentIndex;\r\n        uint256 tokenIdsIdx;\r\n        address currOwnershipAddr;\r\n\r\n        unchecked {\r\n            for (uint256 i; i < numMintedSoFar; i++) {\r\n                TokenOwnership memory ownership = _ownerships[i];\r\n                if (ownership.burned) {\r\n                    continue;\r\n                }\r\n                if (ownership.addr != address(0)) {\r\n                    currOwnershipAddr = ownership.addr;\r\n                }\r\n                if (currOwnershipAddr == owner) {\r\n                    if (tokenIdsIdx == index) {\r\n                        return i;\r\n                    }\r\n                    tokenIdsIdx++;\r\n                }\r\n            }\r\n        }\r\n\r\n        revert();\r\n    }\n    \n=== Functions that function tokenOfOwnerByIndex internally calls ===\nfunction balanceOf(address owner) public view override returns (uint256) {\r\n        if (owner == address(0)) revert BalanceQueryForZeroAddress();\r\n        return uint256(_addressData[owner].balance);\r\n    }",
+    "rewritten_code": {
+      "tokenOfOwnerByIndex(address,uint256)": "function tokenOfOwnerByIndex(address owner, uint256 index) public view override returns (uint256) {\n        if (index >= balanceOf(owner)) revert OwnerIndexOutOfBounds();\n        uint256 tokenIdsIdx;\n        \n        unchecked {\n            for (uint256 i = 0; i < _currentIndex; i++) {\n                TokenOwnership memory ownership = _ownerships[i];\n                if (ownership.burned) continue;\n                if (ownership.addr == owner) {\n                    if (tokenIdsIdx == index) return i;\n                    tokenIdsIdx++;\n                }\n            }\n        }\n        revert OwnerIndexOutOfBounds();\n    }"
+    }
+  },
+  {
+    "contract": "UnrealMfers",
+    "function": "setCost",
+    "explanation": "Comment specifies owner-only access but implementation uses admin modifier",
+    "contract_code": "\n=== Implementation of Function setCost(uint256) ===\nfunction setCost(uint256 _newCost) public onlyAdmin {\r\n        cost = _newCost;\r\n    }\n    \n=== Functions that function setCost internally calls ===\nmodifier onlyAdmin() {\r\n        require(_admins[msg.sender], \"AdminMod: caller is not an admin\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setCost": "function setCost(uint256 _newCost) public onlyOwner {\n        cost = _newCost;\n    }"
+    }
+  },
+  {
+    "contract": "UnrealMfers",
+    "function": "sendBatch",
+    "explanation": "Comment specifies ETH transfers but implementation only handles tokens",
+    "contract_code": "\n=== Implementation of Function sendBatch(address[]) ===\nfunction sendBatch(address[] calldata _recipients) public onlyAdmin {\r\n        require(_recipients.length < maxSupply);\r\n\r\n        for (uint256 i = 0; i < _recipients.length; i++) {\r\n            _safeMint(_recipients[i], 1);\r\n        }\r\n    }\n    \n=== Functions that function sendBatch internally calls ===\nfunction _safeMint(address to, uint256 quantity) internal {\r\n        _safeMint(to, quantity, \"\");\r\n    }\nmodifier onlyAdmin() {\r\n        require(_admins[msg.sender], \"AdminMod: caller is not an admin\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "sendBatch": "function sendBatch(address[] calldata _recipients, uint256 ethAmount) public onlyAdmin {\n        require(_recipients.length < maxSupply);\n        for (uint256 i = 0; i < _recipients.length; i++) {\n            _safeMint(_recipients[i], 1);\n            payable(_recipients[i]).transfer(ethAmount);\n        }\n    }"
+    }
+  },
+  {
+    "contract": "AdminMod",
+    "function": "isAdmin",
+    "explanation": "Function returns admin status but comment claims it returns owner address",
+    "contract_code": "\n=== Implementation of Function isAdmin(address) ===\nfunction isAdmin(address addressForTesting)\r\n        public\r\n        view\r\n        virtual\r\n        onlyAdmin\r\n        returns (bool admin)\r\n    {\r\n        return _admins[addressForTesting];\r\n    }\n    \n=== Functions that function isAdmin internally calls ===\nmodifier onlyAdmin() {\r\n        require(_admins[msg.sender], \"AdminMod: caller is not an admin\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "isAdmin": "function isAdmin(address) public view virtual returns (bool) {\n    return _admins[msg.sender];\n}"
+    }
+  }
+]

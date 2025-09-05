@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "DigiPulse",
+    "function": "withdrawFundsToOwner",
+    "explanation": "Missing owner access control in withdrawal function",
+    "contract_code": "\n=== Implementation of Function withdrawFundsToOwner(uint256) ===\nfunction withdrawFundsToOwner(uint256 _amount) {\r\n    require (icoFulfilled);\r\n    require (this.balance >= _amount);\r\n\r\n    owner.transfer(_amount);\r\n  }\n    ",
+    "rewritten_code": {
+      "withdrawFundsToOwner": "function withdrawFundsToOwner(uint256 _amount) {\n    require (icoFulfilled);\n    require (this.balance >= _amount);\n    require(msg.sender == owner);\n\n    owner.transfer(_amount);\n  }"
+    }
+  },
+  {
+    "contract": "DigiPulse",
+    "function": "DigiPulse",
+    "explanation": "Constructor initializes owner despite comment stating no actions",
+    "contract_code": "\n=== Implementation of Function DigiPulse() ===\nfunction DigiPulse() {\r\n    owner = msg.sender;\r\n  }\n    ",
+    "rewritten_code": {
+      "DigiPulse": "function DigiPulse() {\n    // Empty initializer as per documentation\n  }"
+    }
+  }
+]

@@ -1,0 +1,91 @@
+﻿address,contract,function,detected_by_tool,manual_label,Comment,Code
+0x1fd612d9270e1dd48a31f5b15125f33553e56f75,Runi,transferFrom,TRUE,FP,"['NEQ', 'from', '0']","[['Require', 'Runi', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None], ['Require', 'Runi', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None]]"
+0x1fd612d9270e1dd48a31f5b15125f33553e56f75,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']","[['Require', 'ERC721A', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None], ['Require', 'ERC721A', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None]]"
+0x1fd612d9270e1dd48a31f5b15125f33553e56f75,Runi,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']","[['Require', 'Runi', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None], ['Require', 'Runi', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None]]"
+0x1fd612d9270e1dd48a31f5b15125f33553e56f75,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']","[['Require', 'ERC721A', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None], ['Require', 'ERC721A', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None]]"
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,_mint,TRUE,FP,"['GT', 'quantity', '0']",[]
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,_transfer,TRUE,TP,"['NEQ', 'to', '0']",[]
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,transferFrom,TRUE,TP,"['NEQ', 'to', '0']",[]
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,safeTransferFrom,TRUE,TP,"['NEQ', 'to', '0']",[]
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,safeTransferFrom,TRUE,TP,"['NEQ', 'from', '0']",[]
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,setApprovalForAll,TRUE,FP,"['NEQ', 'operator', 'caller']","[['Require', 'ETM', 'setApprovalForAll', ""['EQ', 'operator', '_msgSenderERC721A()']"", 'None', None, None]]"
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,_mint,TRUE,Duplicated,"['NEQ', 'to', '0']","[['Require', 'ETM', 'freeMint', ""['LEQ', 'ADD', 'totalSupply()', 'amount', 'MAX_FREE']"", 'Freemint SoldOut', None, None]]"
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,_mint,TRUE,Duplicated,"['NEQ', 'to', '0']","[['Require', 'ETM', 'mint', ""['LEQ', 'ADD', 'totalSupply()', 'amount', 'MAX_SUPPLY']"", 'SoldOut', None, None]]"
+0x52f16e3924f89cdda35906c012649e907ff48782,Azukimfer,setApprovalForAll,TRUE,FP,"['NEQ', 'operator', 'caller']","[['Require', 'Azukimfer', 'setApprovalForAll', ""['EQ', 'operator', '_msgSender()']"", 'None', None, None]]"
+0x52f16e3924f89cdda35906c012649e907ff48782,ERC721A,safeTransferFrom,TRUE,FP,"['NEQ', 'to', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,ERC721A,setApprovalForAll,TRUE,Duplicated,"['NEQ', 'operator', 'caller']","[['Require', 'ERC721A', 'setApprovalForAll', ""['EQ', 'operator', '_msgSender()']"", 'None', None, None]]"
+0x52f16e3924f89cdda35906c012649e907ff48782,Azukimfer,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,ERC721A,transferFrom,TRUE,FP,"['NEQ', 'to', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,Azukimfer,transferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,Azukimfer,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,Azukimfer,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,ERC721A,_transfer,TRUE,FP,"['NEQ', 'to', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x52f16e3924f89cdda35906c012649e907ff48782,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0xaa98551a659f44b34293ec6917dd936c4449b35b,NFT,transferFrom,TRUE,FP,"['NEQ', 'from', '0']","[['Require', 'NFT', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None], ['Require', 'NFT', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None]]"
+0xaa98551a659f44b34293ec6917dd936c4449b35b,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']","[['Require', 'ERC721A', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None], ['Require', 'ERC721A', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None]]"
+0xaa98551a659f44b34293ec6917dd936c4449b35b,NFT,safeTransferFrom,TRUE,FP,"['NEQ', 'from', '0']","[['Require', 'NFT', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None], ['Require', 'NFT', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None]]"
+0xaa98551a659f44b34293ec6917dd936c4449b35b,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']","[['Require', 'ERC721A', '_transfer', ""['EQ', 'prevOwnership.addr', 'from']"", 'ERC721A: transfer from incorrect owner', None, None], ['Require', 'ERC721A', '_transfer', ""['NEQ', 'to', 'address(0)']"", 'ERC721A: transfer to the zero address', None, None]]"
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,BoredPumkins,safeTransferFrom,TRUE,FP,"['NEQ', 'from', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,ERC721A,setApprovalForAll,TRUE,FP,"['NEQ', 'operator', 'caller']","[['Require', 'ERC721A', 'setApprovalForAll', ""['EQ', 'operator', '_msgSender()']"", 'None', None, None]]"
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,BoredPumkins,transferFrom,TRUE,FP,"['NEQ', 'from', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,BoredPumkins,setApprovalForAll,TRUE,Duplicated,"['NEQ', 'operator', 'caller']","[['Require', 'BoredPumkins', 'setApprovalForAll', ""['EQ', 'operator', '_msgSender()']"", 'None', None, None]]"
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,ERC721A,_transfer,TRUE,FP,"['NEQ', 'to', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,BoredPumkins,safeTransferFrom,TRUE,duplicated,"['NEQ', 'to', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,BoredPumkins,transferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0xcf72deff2e24263b4461806c9ff636a7a967bf99,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,safeTransferFrom,TRUE,FP,"['NEQ', 'from', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,transferFrom,TRUE,FP,"['NEQ', 'to', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,ERC721A,setApprovalForAll,TRUE,FP,"['NEQ', 'operator', 'caller']","[['Require', 'ERC721A', 'setApprovalForAll', ""['EQ', 'operator', '_msgSenderERC721A()']"", 'None', None, None]]"
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,setApprovalForAll,TRUE,Duplicated,"['NEQ', 'operator', 'caller']","[['Require', 'BlaqueSoul', 'setApprovalForAll', ""['EQ', 'operator', '_msgSenderERC721A()']"", 'None', None, None]]"
+0x55d351764edf23dd64d6da5ad586877197b159ad,ERC721A,_transfer,TRUE,Duplicated,"['NEQ', 'to', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,ERC721A,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,transferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x55d351764edf23dd64d6da5ad586877197b159ad,ERC721A,safeTransferFrom,TRUE,Duplicated,"['NEQ', 'from', '0']",[]
+0x1fe4d0d3f44d86ca4db8cdbccd22d2e61020cbc6,TDAO,_transfer,,FN,,
+0x141c1a97a47ae020939ab1110a954633a0bc920a,ERC20,_mint,,FN,,
+0x09b2d8b8741538abf56f47be76e37aed31f00e0d,OpsCoin,mint,,FN,,
+0x52c625b3920bb70e3a12daa2895eb0dbfebddf85,Ownable,transferOwnership,,FN,,
+0x5d74cf2ad02afbcd6a65560de557a38e7d83eb6c,Dogami,_transfer,,FN,,
+0x1fe4d0d3f44d86ca4db8cdbccd22d2e61020cbc6,TDAO,transferFrom,,FN,,
+0x6fa73dd6a86461a95fa9d792d9edfe631a6281af,ERC721AQueryable,tokensOfOwner,,FN,,
+0x1ecfdccf97edd64fb73890ca4541f306456a21ec,Metarelics,presaleMint,,FN,,
+0x5cfaf9ad2cb84ce2bc40be1beb735bd12a075e99,AbleDollarToken,unfreezeAccount,,FN,,
+0x09b2d8b8741538abf56f47be76e37aed31f00e0d,OpsCoin,burn,,FN,,
+0x0deaa398e9e41d2a7cc78f937e42afd260bf7310,ExclusivePlatform,doTransfer,,FN,,
+0x3c6a7ab47b5f058be0e7c7fe1a4b7925b8aca40e,ERC20,ERC20,,FN,,
+0x3c6a7ab47b5f058be0e7c7fe1a4b7925b8aca40e,LoggedERC20,LoggedERC20,,FN,,
+0x09b2d8b8741538abf56f47be76e37aed31f00e0d,OpsCoin,burnFrom,,FN,,
+0x141c1a97a47ae020939ab1110a954633a0bc920a,ERC20,constructor,,FN,,
+0x43aa26d63e1b245e940ffdf8e394a229069639df,Saturn,transfer,,FN,,
+0x4bbff5a7b710de9e2a1699c5af8ce88766b94296,ERC20,approveMultiple,,FN,,
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,setReveal,,FN,,
+0x43aa26d63e1b245e940ffdf8e394a229069639df,Saturn,withdrawFee,,FN,,
+0x8adcdf31de9a1dca38158d275ea4c757631b41c7,RUGbros,setApprovalForAll,,FN,,
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,setMaxPerAdd,,FN,,
+0x0b0c0c11c83379ceff4f8f04417ab37dd64826d7,TypeII,balanceOf,,FN,,
+0x2fb56c19412897170474e57ea594ec4e3d9dce46,MyAdvancedToken,mintToken,,FN,,
+0x00000000000881d280439988781f743e8cdd1fdf,LancetPasscard,setApprovalForAll,,FN,,
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,setPaused,,FN,,
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,setBaseURI,,FN,,
+0xb1259bb3a28d416a01cedc1dcc495f55c524740f,VIAINS,setActiveSale,,FN,,
+0x1c4f0fa4cb34cc327ecc3e8500df920eef2de967,ETM,totalSupply,,FN,,
+0x141c1a97a47ae020939ab1110a954633a0bc920a,ERC20,decreaseAllowance,,FN,,
+0x55d351764edf23dd64d6da5ad586877197b159ad,BlaqueSoul,setNotRevealedUri,,FN,,
+0x1fe4d0d3f44d86ca4db8cdbccd22d2e61020cbc6,TDAO,transfer,,FN,,
+0x91b5f4ad2e34048d072537a5f693215f8be3083c,ERC721AQueryable,tokensOfOwner,,FN,,
+0xd4ee885fe2e8c5c00eda1f4d91fb645c77a1de24,WeStandWithUkraine,supportsInterface,,FN,,
+0x1ecfdccf97edd64fb73890ca4541f306456a21ec,Metarelics,secondaryMint,,FN,,
+0x7f4ef3ca98dc6543a70a59392e02ab367687bc2d,ERC721Psi,setApprovalForAll,,FN,,
+0x1ecfdccf97edd64fb73890ca4541f306456a21ec,Metarelics,requireChecks,,FN,,
+0x2c5654c6cf1f087e0c66cb7965be617add91050f,ShillBot,_transfer,,FN,,
+0x141c1a97a47ae020939ab1110a954633a0bc920a,ERC20,increaseAllowance,,FN,,
+0x1ecfdccf97edd64fb73890ca4541f306456a21ec,ERC721,tokenURI,,FN,,
+0x5cfaf9ad2cb84ce2bc40be1beb735bd12a075e99,StandardToken,decreaseApproval,,FN,,

@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "ERC20",
+    "function": "decreaseAllowance",
+    "explanation": "decreaseAllowance allows subtraction when allowance is zero without calling approve.",
+    "contract_code": "\n=== Implementation of Function decreaseAllowance(address,uint256) ===\nfunction decreaseAllowance(address spender, uint256 subtractedValue)\r\n        public\r\n        returns (bool)\r\n    {\r\n        require(spender != address(0));\r\n\r\n        _allowed[msg.sender][spender] = (\r\n            _allowed[msg.sender][spender].sub(subtractedValue)\r\n        );\r\n        emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);\r\n        return true;\r\n    }\n    \n=== Functions that function decreaseAllowance internally calls ===\nfunction sub(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        require(b <= a);\r\n        uint256 c = a - b;\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "decreaseAllowance(address,uint256)": "function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {\n    require(spender != address(0));\n    uint256 currentAllowance = _allowed[msg.sender][spender];\n    require(currentAllowance != 0, \"Allowance must be non-zero\");\n    _allowed[msg.sender][spender] = currentAllowance.sub(subtractedValue);\n    emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);\n    return true;\n}"
+    }
+  },
+  {
+    "contract": "ERC20",
+    "function": "increaseAllowance",
+    "explanation": "increaseAllowance allows incrementing allowance from zero without calling approve.",
+    "contract_code": "\n=== Implementation of Function increaseAllowance(address,uint256) ===\nfunction increaseAllowance(address spender, uint256 addedValue)\r\n        public\r\n        returns (bool)\r\n    {\r\n        require(spender != address(0));\r\n\r\n        _allowed[msg.sender][spender] = (\r\n            _allowed[msg.sender][spender].add(addedValue)\r\n        );\r\n        emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);\r\n        return true;\r\n    }\n    \n=== Functions that function increaseAllowance internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a);\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "increaseAllowance(address,uint256)": "function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {\n    require(spender != address(0));\n    uint256 currentAllowance = _allowed[msg.sender][spender];\n    require(currentAllowance != 0, \"Allowance must be non-zero\");\n    _allowed[msg.sender][spender] = currentAllowance.add(addedValue);\n    emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);\n    return true;\n}"
+    }
+  }
+]

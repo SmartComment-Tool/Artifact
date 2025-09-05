@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "ERC721A",
+    "function": "setApprovalForAll",
+    "explanation": "Missing check preventing caller from being operator",
+    "contract_code": "\n=== Implementation of Function setApprovalForAll(address,bool) ===\ntion setApprovalForAll(address operator, bool approved) public virtual override {\r\n        _operatorApprovals[_msgSenderERC721A()][operator] = approved;\r\n        emit ApprovalForAll(_msgSenderERC721A(), operator, approved);\r\n    }\r\n\r\n\n    \n=== Functions that function setApprovalForAll internally calls ===\ntion _msgSenderERC721A() internal view virtual returns (address) {\r\n        return msg.sender;\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "setApprovalForAll": "function setApprovalForAll(address operator, bool approved) public virtual override {\n        require(operator != _msgSenderERC721A(), 'ERC721A: cannot approve caller as operator');\n        _operatorApprovals[_msgSenderERC721A()][operator] = approved;\n        emit ApprovalForAll(_msgSenderERC721A(), operator, approved);\n    }"
+    }
+  },
+  {
+    "contract": "FryingFishClub",
+    "function": "constructor",
+    "explanation": "Missing royalty fee cap validation in constructor",
+    "contract_code": "\n=== Implementation of Function constructor(string,address,address,uint96) ===\ntructor(\r\n        string memory _unRevealedUri,\r\n        address _withdrawalAddress,\r\n        address _royaltyAddress,\r\n        uint96 _royaltyBips\r\n    ) ERC721A(\"Frying Fish Club\", \"FFC\") {\r\n        setUnRevealedUri(_unRevealedUri);\r\n        withdrawalAddress = _withdrawalAddress;\r\n        setRoyalty(_royaltyAddress, _royaltyBips);\r\n    }\r\n\r\n\n    \n=== Functions that function constructor internally calls ===\ntion setRoyalty(\r\n        address _receiver,\r\n        uint96 _royaltyFeeInBips\r\n    ) public onlyOwner {\r\n        _setDefaultRoyalty(_receiver, _royaltyFeeInBips);\r\n    }\r\n\r\n\ntion setUnRevealedUri(string memory _unRevealedUri) public onlyOwner {\r\n        unRevealedURI = _unRevealedUri;\r\n    }\r\n\r\n\ntructor(string memory name_, string memory symbol_) {\r\n        _name = name_;\r\n        _symbol = symbol_;\r\n        _currentIndex = _startTokenId();\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "constructor(string,address,address,uint96)": "constructor(\n        string memory _unRevealedUri,\n        address _withdrawalAddress,\n        address _royaltyAddress,\n        uint96 _royaltyBips\n    ) ERC721A(\"Frying Fish Club\", \"FFC\") {\n        require(_royaltyBips <= 1000, \"Max 10% fee\");\n        setUnRevealedUri(_unRevealedUri);\n        withdrawalAddress = _withdrawalAddress;\n        setRoyalty(_royaltyAddress, _royaltyBips);\n    }"
+    }
+  }
+]

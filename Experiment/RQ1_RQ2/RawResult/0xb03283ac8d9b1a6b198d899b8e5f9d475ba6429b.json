@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "TSLN",
+    "function": "setApprovalForAll",
+    "explanation": "Missing check that operator is not the caller.",
+    "contract_code": "\n=== Implementation of Function setApprovalForAll(address,bool) ===\n bool approved) public override onlyAllowedOperatorApproval(operator) {\n    super.setApprovalForAll(operator, approved);\n  }\n\n  function approve(address operator, uint2\n    \n=== Functions that function setApprovalForAll internally calls ===\nfunction setApprovalForAll(address operator, bool approved) public virtual override {\n        _setApprovalForAll(_msgSender(), operator, approved);\n    }\nmodifier onlyAllowedOperatorApproval(address operator) virtual {\n        _checkFilterOperator(operator);\n        _;\n    }",
+    "rewritten_code": {
+      "setApprovalForAll(address,bool)": "function setApprovalForAll(address operator, bool approved) public override onlyAllowedOperatorApproval(operator) {\n    require(operator != _msgSender(), \"Operator cannot be caller\");\n    super.setApprovalForAll(operator, approved);\n  }"
+    }
+  }
+]

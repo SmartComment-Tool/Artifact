@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Pausable",
+    "function": "unpause",
+    "explanation": "Function allows pausers but comment specifies owner-only access",
+    "contract_code": "\n=== Implementation of Function unpause() ===\nfunction unpause() public onlyPauser whenPaused {\r\n        _paused = false;\r\n        emit Unpaused(msg.sender);\r\n    }\n    \n=== Functions that function unpause internally calls ===\nmodifier onlyPauser() {\r\n        require(isPauser(msg.sender)|| isOwner(msg.sender));\r\n        _;\r\n    }\nmodifier whenPaused() {\r\n        require(_paused, \"Pausable: not paused\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "unpause()": "function unpause() public onlyOwner whenPaused {\n        _paused = false;\n        emit Unpaused(msg.sender);\n    }"
+    }
+  }
+]

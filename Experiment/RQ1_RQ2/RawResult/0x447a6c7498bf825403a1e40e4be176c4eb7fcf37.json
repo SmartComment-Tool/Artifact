@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "Leftoverphotos",
+    "function": "setPriceReserved",
+    "explanation": "Function sets priceReserved directly without checking isReservedMintActive status.",
+    "contract_code": "\n=== Implementation of Function setPriceReserved(uint256) ===\nfunction setPriceReserved(uint256 newPrice) public onlyOwner {\n        priceReserved = newPrice;\n    }\n    \n=== Functions that function setPriceReserved internally calls ===\nmodifier onlyOwner() {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n        _;\n    }",
+    "rewritten_code": {
+      "setPriceReserved": "function setPriceReserved(uint256 newPrice) public onlyOwner {\n    if (isReservedMintActive) {\n        priceReserved = 0;\n    } else {\n        priceReserved = newPrice;\n    }\n}"
+    }
+  },
+  {
+    "contract": "Leftoverphotos",
+    "function": "setPricePublic",
+    "explanation": "Function sets price without checking free mint status as described.",
+    "contract_code": "\n=== Implementation of Function setPricePublic(uint256) ===\nfunction setPricePublic(uint256 newPrice) public onlyOwner {\n        pricePublic = newPrice;\n    }\n    \n=== Functions that function setPricePublic internally calls ===\nmodifier onlyOwner() {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n        _;\n    }",
+    "rewritten_code": {
+      "setPricePublic(uint256)": "function setPricePublic(uint256 newPrice) public onlyOwner {\n    pricePublic = isPublicMintActive ? 0 : newPrice;\n}"
+    }
+  }
+]

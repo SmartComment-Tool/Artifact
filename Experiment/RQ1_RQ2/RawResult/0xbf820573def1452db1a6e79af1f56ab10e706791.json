@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ROBO",
+    "function": "tokenURI",
+    "explanation": "Function returns baseURI without appending tokenId, contradicting ERC721Metadata standard.",
+    "contract_code": "\n=== Implementation of Function tokenURI(uint256) ===\nfunction tokenURI(uint256 tokenId)\r\n        public\r\n        view\r\n        virtual\r\n        override\r\n        returns (string memory)\r\n    {\r\n        require(_exists(tokenId), \"Nonexistent token\");\r\n\r\n        return\r\n            baseURI;\r\n    }\n    \n=== Functions that function tokenURI internally calls ===\nfunction _exists(uint256 tokenId) internal view returns (bool) {\r\n    return tokenId < currentIndex;\r\n  }",
+    "rewritten_code": {
+      "tokenURI": "function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {\n    require(_exists(tokenId), \"Nonexistent token\");\n    return string(abi.encodePacked(baseURI, tokenId.toString()));\n}"
+    }
+  }
+]

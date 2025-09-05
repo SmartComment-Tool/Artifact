@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "DraculaToken",
+    "function": "delegates",
+    "explanation": "Function comment describes delegation action, but implementation is a getter returning delegate address.",
+    "contract_code": "\n=== Implementation of Function delegates(address) ===\nfunction delegates(address delegator)\n        external\n        view\n        returns (address)\n    {\n        return _delegates[delegator];\n    }\n    ",
+    "rewritten_code": {
+      "delegates": "function delegates(address delegatee) external { _delegate(msg.sender, delegatee); }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "HAPEPRIME",
+    "function": "updateSwapEnabled",
+    "explanation": "Function allows enabling swaps, contradicting emergency-disable purpose",
+    "contract_code": "\n=== Implementation of Function updateSwapEnabled(bool) ===\nfunction updateSwapEnabled(bool enabled) external onlyOwner(){\r\n        swapEnabled = enabled;\r\n    }\n    \n=== Functions that function updateSwapEnabled internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "updateSwapEnabled": "function updateSwapEnabled(bool enabled) external onlyOwner {\n    require(!enabled, \"Can only disable swaps\");\n    swapEnabled = enabled;\n}"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "StandardToken",
+    "function": "decreaseApproval",
+    "explanation": "Comment states approve should be called when allowance is 0, but code directly sets allowed without calling approve.",
+    "contract_code": "\n=== Implementation of Function decreaseApproval(address,uint256) ===\nfunction decreaseApproval(\r\n    address _spender,\r\n    uint256 _subtractedValue\r\n  )\r\n    public\r\n    returns (bool)\r\n  {\r\n    uint256 oldValue = allowed[msg.sender][_spender];\r\n    if (_subtractedValue >= oldValue) {\r\n      allowed[msg.sender][_spender] = 0;\r\n    } else {\r\n      allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);\r\n    }\r\n    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\r\n    return true;\r\n  }\n    \n=== Functions that function decreaseApproval internally calls ===\nfunction sub(uint256 _a, uint256 _b) internal pure returns (uint256) {\r\n    assert(_b <= _a);\r\n    return _a - _b;\r\n  }",
+    "rewritten_code": {
+      "decreaseApproval(address,uint256)": "function decreaseApproval(address _spender, uint256 _subtractedValue) public returns (bool) {\n    uint256 oldValue = allowed[msg.sender][_spender];\n    if (_subtractedValue >= oldValue) {\n      approve(_spender, 0);\n    } else {\n      allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);\n      emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\n    }\n    return true;\n  }"
+    }
+  }
+]

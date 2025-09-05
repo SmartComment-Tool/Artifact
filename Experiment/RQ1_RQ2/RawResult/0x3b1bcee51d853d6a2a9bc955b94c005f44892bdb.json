@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Crowdsale",
+    "function": "setICOEndDate",
+    "explanation": "Function implementation handles token purchase instead of setting PreICO end date",
+    "contract_code": "\n=== Implementation of Function setICOEndDate(uint256) ===\nbeneficiary = msg.sender;\r\n        uint256 weiAmount = msg.value;\r\n        uint256 tokens;\r\n\r\n        if(_isPreICO()){\r\n\r\n            _preValidatePreIC\n    \n=== Functions that function setICOEndDate internally calls ===\nmodifier onlyOwner() {\r\n        require(msg.sender == owner);\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function setICOEndDate(uint256 _preICOEndDate) public onlyOwner {\n        require(_preICOEndDate > preICOStartDate);\n        preICOEndDate = _preICOEndDate;\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721B",
+    "function": "totalSupply",
+    "explanation": "IERC721Enumerable's totalSupply should count valid tokens, but implementation returns array length which may include burned tokens.",
+    "contract_code": "\n=== Implementation of Function totalSupply() ===\nfunction totalSupply() public view returns (uint256) {\r\n        return _owners.length;\r\n    }\n    ",
+    "rewritten_code": {
+      "totalSupply": "function totalSupply() public view returns (uint256) {\n        uint256 count;\n        uint256 length = _owners.length;\n        unchecked {\n            for (uint256 i; i < length; i++) {\n                if (_owners[i] != address(0)) {\n                    count++;\n                }\n            }\n        }\n        return count;\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "WeStandWithUkraine",
+    "function": "supportsInterface",
+    "explanation": "Function lacks onlyOwner modifier contradicting @dev comment",
+    "contract_code": "\n=== Implementation of Function supportsInterface(bytes4) ===\nfunction supportsInterface(bytes4 interfaceId)\r\n        public\r\n        view\r\n        override(ERC721, IERC165)\r\n        returns (bool)\r\n    {\r\n        return\r\n            interfaceId == type(IERC2981).interfaceId ||\r\n            super.supportsInterface(interfaceId);\r\n    }\n    \n=== Functions that function supportsInterface internally calls ===\nfunction supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {\r\n        return\r\n            interfaceId == type(IERC721).interfaceId ||\r\n            interfaceId == type(IERC721Metadata).interfaceId ||\r\n            super.supportsInterface(interfaceId);\r\n    }",
+    "rewritten_code": {
+      "supportsInterface(bytes4)": "function supportsInterface(bytes4 interfaceId) public view override(ERC721, IERC165) onlyOwner returns (bool) {\n        return\n            interfaceId == type(IERC2981).interfaceId ||\n            super.supportsInterface(interfaceId);\n    }"
+    }
+  }
+]

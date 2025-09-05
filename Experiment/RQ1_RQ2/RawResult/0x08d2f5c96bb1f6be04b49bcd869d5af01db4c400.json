@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Witch",
+    "function": "clear",
+    "explanation": "Function reverts when vault is owned by Witch, contradicting comment to remove auctions not owned by Witch.",
+    "contract_code": "\n=== Implementation of Function clear(bytes12) ===\nnction clear(bytes12 vaultId) external {\r\n        DataTypes.Auction memory auction_ = _auction(vaultId);\r\n        if (cauldron.vaults(vaultId).owner == address(this)) {\r\n            revert AuctionIsCorrect(vaultId);\r\n        }\r\n\r\n        limits[auction_.ilkId][auction_.baseId].sum -= auction_.ink;\r\n        delete auctions[vaultId];\r\n        emit Cleared(vaultId);\r\n    }\r\n\n    \n=== Functions that function clear internally calls ===\ns (DataTypes.Auction memory auction_)\r\n    {\r\n        auction_ = auctions[vaultId];\r\n\r\n        if (auction_.start == 0) {\r\n            revert VaultNotUnderAuction(vaultId);\r\n        }\r\n    }\r\n}",
+    "rewritten_code": {
+      "clear": "function clear(bytes12 vaultId) external {\n        DataTypes.Auction memory auction_ = _auction(vaultId);\n        if (cauldron.vaults(vaultId).owner != address(this)) {\n            revert AuctionIsCorrect(vaultId);\n        }\n\n        limits[auction_.ilkId][auction_.baseId].sum -= auction_.ink;\n        delete auctions[vaultId];\n        emit Cleared(vaultId);\n    }"
+    }
+  }
+]

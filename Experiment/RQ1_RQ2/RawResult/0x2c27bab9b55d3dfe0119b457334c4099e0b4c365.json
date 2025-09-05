@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ASH",
+    "function": "pause",
+    "explanation": "Comment specifies pausing all NFT swapping, but implementation only pauses one type",
+    "contract_code": "\n=== Implementation of Function pause(bool) ===\nfunction pause(bool erc721)\r\n        public\r\n        onlyOwner\r\n    {\r\n        if (erc721) {\r\n            isERC721Paused = true;\r\n\r\n        } else {\r\n            isERC1155Paused = true;\r\n        }\r\n    }\n    \n=== Functions that function pause internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function pause(bool erc721)\n    public\n    onlyOwner\n{\n    isERC721Paused = true;\n    isERC1155Paused = true;\n}"
+    }
+  }
+]

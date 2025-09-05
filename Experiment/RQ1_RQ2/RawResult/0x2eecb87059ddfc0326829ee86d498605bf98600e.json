@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "CYNQUE",
+    "function": "getCurrentAuctionPrice",
+    "explanation": "Function returns step and price but comment specifies returning only current price.",
+    "contract_code": "\n=== Implementation of Function getCurrentAuctionPrice() ===\nfunction getCurrentAuctionPrice() external view returns (uint256, uint256) {\r\n        (uint256 step, uint256 price) = _getCurrentStepAndPrice();\r\n\r\n        return (step, price);\r\n    }\n    \n=== Functions that function getCurrentAuctionPrice internally calls ===\nfunction _getCurrentStepAndPrice() internal view returns (uint256, uint256) {\r\n        uint256 step = _getStep();\r\n\r\n        if (step == _currentStep) {\r\n            return (_currentStep, _pricePerStep[_currentStep]);\r\n        } else if (step > _currentStep) {\r\n            return (step, _getAuctionPrice(step, _currentStep));\r\n        } else {\r\n            revert(\"Step is < _currentStep\");\r\n        }\r\n    }",
+    "rewritten_code": {
+      "getCurrentAuctionPrice": "function getCurrentAuctionPrice() external view returns (uint256) {\n        (, uint256 price) = _getCurrentStepAndPrice();\n        return price;\n    }"
+    }
+  }
+]

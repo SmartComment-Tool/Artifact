@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "ETM",
+    "function": "safeTransferFrom",
+    "explanation": "Missing ERC721 receiver check for contract addresses",
+    "contract_code": "\n=== Implementation of Function safeTransferFrom(address,address,uint256,bytes) ===\nfunction safeTransferFrom(\r\n        address from,\r\n        address to,\r\n        uint256 tokenId,\r\n        bytes memory _data\r\n    ) public virtual override {\r\n        _transfer(from, to, tokenId);\r\n    }\n    \n=== Functions that function safeTransferFrom internally calls ===\nfunction _transfer(\r\n        address from,\r\n        address to,\r\n        uint256 tokenId\r\n    ) private {\r\n        uint256 prevOwnershipPacked = _packedOwnershipOf(tokenId);\r\n\r\n        if (address(uint160(prevOwnershipPacked)) != from)\r\n            revert TransferFromIncorrectOwner();\r\n\r\n        address approvedAddress = _tokenApprovals[tokenId];\r\n\r\n        bool isApprovedOrOwner = (_msgSenderERC721A() == from ||\r\n            isApprovedForAll(from, _msgSenderERC721A()) ||\r\n            approvedAddress == _msgSenderERC721A());\r\n\r\n        if (!isApprovedOrOwner) revert TransferCallerNotOwnerNorApproved();\r\n\r\n        if (_addressToUint256(approvedAddress) != 0) {\r\n            delete _tokenApprovals[tokenId];\r\n        }\r\n\r\n        unchecked {\r\n            --_packedAddressData[from]; // Updates: `balance -= 1`.\r\n            ++_packedAddressData[to]; // Updates: `balance += 1`.\r\n\r\n            _packedOwnerships[tokenId] =\r\n                _addressToUint256(to) |\r\n                (block.timestamp << BITPOS_START_TIMESTAMP) |\r\n                BITMASK_NEXT_INITIALIZED;\r\n\r\n            if (prevOwnershipPacked & BITMASK_NEXT_INITIALIZED == 0) {\r\n                uint256 nextTokenId = tokenId + 1;\r\n                if (_packedOwnerships[nextTokenId] == 0) {\r\n                    if (nextTokenId != _currentIndex) {\r\n                        _packedOwnerships[nextTokenId] = prevOwnershipPacked;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n\r\n        emit Transfer(from, to, tokenId);\r\n        _afterTokenTransfers(from, to, tokenId, 1);\r\n    }",
+    "rewritten_code": {
+      "function_name": "function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory _data) public virtual override {\n    _transfer(from, to, tokenId);\n    if (to.code.length > 0) {\n        try IERC721Receiver(to).onERC721Received(_msgSenderERC721A(), from, tokenId, _data) returns (bytes4 retval) {\n            if (retval != IERC721Receiver.onERC721Received.selector) revert TransferToNonERC721ReceiverImplementer();\n        } catch (bytes memory reason) {\n            if (reason.length == 0) revert TransferToNonERC721ReceiverImplementer();\n            assembly {\n                revert(add(32, reason), mload(reason))\n            }\n        }\n    }\n}"
+    }
+  },
+  {
+    "contract": "ETM",
+    "function": "totalSupply",
+    "explanation": "Total supply calculation missing burned tokens subtraction",
+    "contract_code": "\n=== Implementation of Function totalSupply() ===\nfunction totalSupply() public view override returns (uint256) {\r\n        unchecked {\r\n            return _currentIndex - _startTokenId();\r\n        }\r\n    }\n    \n=== Functions that function totalSupply internally calls ===\nfunction _startTokenId() internal view virtual returns (uint256) {\r\n        return 0;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function totalSupply() public view override returns (uint256) {\n        unchecked {\n            return (_currentIndex - _startTokenId()) - BITMASK_BURNED;\n        }\n    }"
+    }
+  }
+]

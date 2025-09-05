@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "TokenLock",
+    "function": "getMinLockedAmount",
+    "explanation": "Function returns locked tokens instead of usable amount as per comment",
+    "contract_code": "\n=== Implementation of Function getMinLockedAmount(address) ===\nfunction getMinLockedAmount(address _addr) view public returns (uint256 locked) {\r\n    uint256 i;\r\n    uint256 a;\r\n    uint256 t;\r\n    uint256 lockSum = 0;\r\n\r\n    TokenLockState storage lockState = lockingStates[_addr];\r\n    if (lockState.latestReleaseTime < now) {\r\n      return 0;\r\n    }\r\n\r\n    for (i=0; i<lockState.tokenLocks.length; i++) {\r\n      a = lockState.tokenLocks[i].amount;\r\n      t = lockState.tokenLocks[i].time;\r\n\r\n      if (t > now) {\r\n        lockSum = lockSum.add(a);\r\n      }\r\n    }\r\n\r\n    return lockSum;\r\n  }\n    \n=== Functions that function getMinLockedAmount internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n    uint256 c = a + b;\r\n    assert(c >= a); // overflow check\r\n    return c;\r\n  }",
+    "rewritten_code": {
+      "getMinLockedAmount(address)": "function getMinLockedAmount(address _addr) view public returns (uint256) {\n    TokenLockState storage lockState = lockingStates[_addr];\n    if (lockState.latestReleaseTime <= now) return 0;\n    \n    uint256 usable;\n    for (uint256 i=0; i<lockState.tokenLocks.length; i++) {\n      if (lockState.tokenLocks[i].time <= now) {\n          usable += lockState.tokenLocks[i].amount;\n      }\n    }\n    return usable;\n}"
+    }
+  }
+]

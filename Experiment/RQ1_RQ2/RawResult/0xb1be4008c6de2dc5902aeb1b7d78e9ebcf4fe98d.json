@@ -1,0 +1,29 @@
+[
+  {
+    "contract": "OAKTokenCrowdsale",
+    "function": "Y2_release",
+    "explanation": "Transfers contract balance instead of specified Y2_lockedTokenAmount",
+    "contract_code": "\n=== Implementation of Function Y2_release() ===\nfunction Y2_release() onlyOwner public {\r\n        require(Y1_lockedTokenAmount == 0);\r\n        require(Y2_lockedTokenAmount > 0);\r\n        require(now > Y2_lockedTokenReleaseTime);\r\n\r\n        uint256 amount = token.balanceOf(this);\r\n        require(amount > 0);\r\n\r\n        token.transfer(restricted, amount);\r\n\r\n        Y2_lockedTokenAmount = 0;\r\n    }\n    \n=== Functions that function Y2_release internally calls ===\nfunction balanceOf(address _owner) public view returns (uint256 balance) {\r\n        return balances[_owner];\r\n    }\nfunction transfer(address _to, uint _value) public returns (bool) {\r\n        require(!kycRequired[msg.sender]);\r\n\r\n        return super.transfer(_to, _value);\r\n    }\nmodifier onlyOwner() {\r\n        require(msg.sender == owner);\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "Y2_release": "function Y2_release() onlyOwner public {\n        require(Y1_lockedTokenAmount == 0);\n        require(Y2_lockedTokenAmount > 0);\n        require(now > Y2_lockedTokenReleaseTime);\n\n        token.transfer(restricted, Y2_lockedTokenAmount);\n\n        Y2_lockedTokenAmount = 0;\n    }"
+    }
+  },
+  {
+    "contract": "OAKTokenCrowdsale",
+    "function": "finalization",
+    "explanation": "Minted tokens sent to contract address instead of owner, violating comment about adding tokens for owner",
+    "contract_code": "\n=== Implementation of Function finalization() ===\nfunction finalization() internal {\r\n        uint256 restrictedTokens = soldTokens.div(100).mul(restrictedPercent);\r\n        token.mint(this, restrictedTokens);\r\n        token.kycVerify(this);\r\n\r\n        Y1_lockedTokenReleaseTime = now + 1 years;\r\n        Y1_lockedTokenAmount = restrictedTokens.div(2);\r\n\r\n        Y2_lockedTokenReleaseTime = now + 2 years;\r\n        Y2_lockedTokenAmount = restrictedTokens.div(2);\r\n\r\n        token.finishMinting();\r\n\r\n        token.transferOwnership(owner);\r\n\r\n    }\n    \n=== Functions that function finalization internally calls ===\nfunction div(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a / b;\r\n        return c;\r\n    }\nfunction finishMinting() onlyOwner canMint public returns (bool) {\r\n        mintingFinished = true;\r\n        MintFinished();\r\n        return true;\r\n    }\nfunction kycVerify(address participant) onlyOwner public {\r\n        kycRequired[participant] = false;\r\n        KycVerified(participant);\r\n    }\nfunction mint(address _to, uint256 _amount) onlyOwner canMint public returns (bool) {\r\n        kycRequired[_to] = true;\r\n        return super.mint(_to, _amount);\r\n    }\nfunction mul(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        if (a == 0) {\r\n            return 0;\r\n        }\r\n        uint256 c = a * b;\r\n        assert(c / a == b);\r\n        return c;\r\n    }\nfunction transferOwnership(address newOwner) public onlyOwner {\r\n        require(newOwner != address(0));\r\n        OwnershipTransferred(owner, newOwner);\r\n        owner = newOwner;\r\n    }",
+    "rewritten_code": {
+      "finalization()": "function finalization() internal {\n        uint256 restrictedTokens = soldTokens.div(100).mul(restrictedPercent);\n        token.mint(owner, restrictedTokens);\n        token.kycVerify(owner);\n\n        Y1_lockedTokenReleaseTime = now + 1 years;\n        Y1_lockedTokenAmount = restrictedTokens.div(2);\n\n        Y2_lockedTokenReleaseTime = now + 2 years;\n        Y2_lockedTokenAmount = restrictedTokens.div(2);\n\n        token.finishMinting();\n        token.transferOwnership(owner);\n    }"
+    }
+  },
+  {
+    "contract": "StandardToken",
+    "function": "approve",
+    "explanation": "Approval update vulnerable to race condition; missing allowance reset before new value assignment",
+    "contract_code": "\n=== Implementation of Function approve(address,uint256) ===\nfunction approve(address _spender, uint256 _value) public returns (bool) {\r\n        allowed[msg.sender][_spender] = _value;\r\n        Approval(msg.sender, _spender, _value);\r\n        return true;\r\n    }\n    ",
+    "rewritten_code": {
+      "approve(address,uint256)": "function approve(address _spender, uint256 _value) public returns (bool) {\n        allowed[msg.sender][_spender] = 0;\n        allowed[msg.sender][_spender] = _value;\n        Approval(msg.sender, _spender, _value);\n        return true;\n    }"
+    }
+  }
+]

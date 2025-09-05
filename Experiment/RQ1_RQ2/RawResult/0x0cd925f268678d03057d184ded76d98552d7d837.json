@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "LootItems",
+    "function": "getLootItem",
+    "explanation": "Comment specifies returning from array but implementation uses mapping",
+    "contract_code": "\n=== Implementation of Function getLootItem(uint256) ===\nfunction getLootItem(uint256 id) public view returns (LootItem memory) {\r\n        return lootItemList[id];\r\n    }\n    ",
+    "rewritten_code": {
+      "getLootItem": "function getLootItem(uint256 id) public view returns (LootItem memory) {\n        require(lootItemList[id].exists, \"Item does not exist\");\n        return lootItemList[id];\n    }"
+    }
+  },
+  {
+    "contract": "LootItems",
+    "function": "updateLootItem",
+    "explanation": "Missing existence check before updating loot item",
+    "contract_code": "\n=== Implementation of Function updateLootItem(uint256,uint256,uint256,uint256,string,uint256,bool) ===\nfunction updateLootItem(uint256 tokenIndex, \r\n    uint256 newCostinWei,\r\n    uint256 newTotalSupply,\r\n    uint256 newMaxMintPerUser,\r\n    string memory newURI, \r\n    uint256 newSaleCostinWei,\r\n    bool isOnSale) public onlyRole(Roles.ROLE_SAFE) {\r\n        lootItemList[tokenIndex] = LootItem(\r\n            newCostinWei, \r\n            newTotalSupply, \r\n            newMaxMintPerUser, \r\n            newURI, \r\n            newSaleCostinWei, \r\n            isOnSale, \r\n            true);\r\n    }\n    \n=== Functions that function updateLootItem internally calls ===\nmodifier onlyRole(bytes32 role) {\n        _checkRole(role, _msgSender());\n        _;\n    }",
+    "rewritten_code": {
+      "updateLootItem": "function updateLootItem(uint256 tokenIndex, \n    uint256 newCostinWei,\n    uint256 newTotalSupply,\n    uint256 newMaxMintPerUser,\n    string memory newURI, \n    uint256 newSaleCostinWei,\n    bool isOnSale) public onlyRole(Roles.ROLE_SAFE) {\n        require(lootItemList[tokenIndex].exists, \"Item does not exist\");\n        lootItemList[tokenIndex] = LootItem(\n            newCostinWei, \n            newTotalSupply, \n            newMaxMintPerUser, \n            newURI, \n            newSaleCostinWei, \n            isOnSale, \n            true);\n    }"
+    }
+  }
+]

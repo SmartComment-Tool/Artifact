@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "AsgardBondDepository",
+    "function": "bondPriceInUSD",
+    "explanation": "Non-liquidity bond division by 100 incorrectly scales DAI conversion.",
+    "contract_code": "\n=== Implementation of Function bondPriceInUSD() ===\nfunction bondPriceInUSD() public view returns (uint256 price_) {\r\n        if (isLiquidityBond) {\r\n            price_ = bondPrice()\r\n                .mul(IBondCalculator(bondCalculator).markdown(principle))\r\n                .div(100);\r\n        } else {\r\n            price_ = bondPrice().mul(10**IERC20(principle).decimals()).div(100);\r\n        }\r\n    }\n    \n=== Functions that function bondPriceInUSD internally calls ===\nfunction bondPrice() public view returns (uint256 price_) {\r\n        price_ = terms.controlVariable.mul(debtRatio()).add(1000000000).div(\r\n            1e7\r\n        );\r\n        if (price_ < terms.minimumPrice) {\r\n            price_ = terms.minimumPrice;\r\n        }\r\n    }\nfunction div(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        return div(a, b, \"SafeMath: division by zero\");\r\n    }\nfunction mul(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        if (a == 0) {\r\n            return 0;\r\n        }\r\n\r\n        uint256 c = a * b;\r\n        require(c / a == b, \"SafeMath: multiplication overflow\");\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "bondPriceInUSD()": "function bondPriceInUSD() public view returns (uint256 price_) {\n    if (isLiquidityBond) {\n        price_ = bondPrice().mul(IBondCalculator(bondCalculator).markdown(principle)).div(100);\n    } else {\n        price_ = bondPrice().mul(10**IERC20(principle).decimals());\n    }\n}"
+    }
+  }
+]

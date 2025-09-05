@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "BookCoin721",
+    "function": "preGroupOneRoot",
+    "explanation": "Function returns presale root instead of group one root",
+    "contract_code": "\n=== Implementation of Function preGroupOneRoot() ===\nnction preGroupOneRoot() public view returns (bytes32) {\r\n        return _rootPreSale;\r\n    }\r\n\n    ",
+    "rewritten_code": {
+      "preGroupOneRoot": "function preGroupOneRoot() public view returns (bytes32) {\n        return _rootGroup1;\n    }"
+    }
+  },
+  {
+    "contract": "BookCoin721",
+    "function": "preGroupTwoRoot",
+    "explanation": "Function returns pre-sale root instead of group two root",
+    "contract_code": "\n=== Implementation of Function preGroupTwoRoot() ===\nnction preGroupTwoRoot() public view returns (bytes32) {\r\n        return _rootPreSale;\r\n    }\r\n\n    ",
+    "rewritten_code": {
+      "function_name": "function preGroupTwoRoot() public view returns (bytes32) {\n        return _rootGroup2;\n    }"
+    }
+  }
+]

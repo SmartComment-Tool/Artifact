@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Address",
+    "function": "verifyCallResultFromTarget",
+    "explanation": "Check for target being a contract only occurs when returndata is empty, missing in other success cases.",
+    "contract_code": "\n=== Implementation of Function verifyCallResultFromTarget(address,bool,bytes,string) ===\nfunction verifyCallResultFromTarget(\n        address target,\n        bool success,\n        bytes memory returndata,\n        string memory errorMessage\n    ) internal view returns (bytes memory) {\n        if (success) {\n            if (returndata.length == 0) {\n                require(isContract(target), \"Address: call to non-contract\");\n            }\n            return returndata;\n        } else {\n            _revert(returndata, errorMessage);\n        }\n    }\n    \n=== Functions that function verifyCallResultFromTarget internally calls ===\nfunction _revert(bytes memory returndata, string memory errorMessage) private pure {\n        if (returndata.length > 0) {\n            assembly {\n                let returndata_size := mload(returndata)\n                revert(add(32, returndata), returndata_size)\n            }\n        } else {\n            revert(errorMessage);\n        }\n    }\nfunction isContract(address account) internal view returns (bool) {\n\n        return account.code.length > 0;\n    }",
+    "rewritten_code": {
+      "verifyCallResultFromTarget": "function verifyCallResultFromTarget(address target, bool success, bytes memory returndata, string memory errorMessage) internal view returns (bytes memory) {\n    if (success) {\n        require(isContract(target), \"Address: call to non-contract\");\n        return returndata;\n    } else {\n        _revert(returndata, errorMessage);\n    }\n}"
+    }
+  }
+]

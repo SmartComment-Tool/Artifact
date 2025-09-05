@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "KarafuruArtGenesis",
+    "function": "mintOwner",
+    "explanation": "Function implements tokenURI instead of mintOwner as specified in comment",
+    "contract_code": "\n=== Implementation of Function mintOwner(address,uint256) ===\n   \r\n    function tokenURI(uint256 tokenId)\r\n        public\r\n        view\r\n        override\r\n        returns (string memory)\r\n    {\r\n        req\n    \n=== Functions that function mintOwner internally calls ===\n_totalMintAmount = currentIndex + _mintAmount;\r\n        if(_totalMintAmount >= 50 && _totalMintAmount <700) {\r\n            PRICE = 0.025 ether;\r\n        } else if(_totalMintAmount >=700 && _totalMintAmount <1200){\r\n            PRICE = 0.05 ether;\r\n        } else if(_totalMintAmount \nfunction _safeMint(address to, uint256 quantity) internal {\r\n        _safeMint(to, quantity, '');\r\n    }\nmodifier onlyOwner() {\n        _checkOwner();\n        _;\n    }",
+    "rewritten_code": {
+      "mintOwner(address,uint256)": "function mintOwner(address _to, uint256 _mintAmount) public onlyOwner {\n    _safeMint(_to, _mintAmount);\n}"
+    }
+  }
+]

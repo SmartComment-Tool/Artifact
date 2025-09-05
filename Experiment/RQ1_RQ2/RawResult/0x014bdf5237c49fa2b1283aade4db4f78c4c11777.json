@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "FlipItBurgerIngredient",
+    "function": "uri",
+    "explanation": "URI implementation appends tokenId instead of using {id} substitution",
+    "contract_code": "\n=== Implementation of Function uri(uint256) ===\nfunction uri(uint256 tokenId) public view override returns (string memory) {\n        return string(abi.encodePacked(super.uri(tokenId), tokenId.toString(), \".json\"));\n    }\n    \n=== Functions that function uri internally calls ===\nfunction toString(uint256 value) internal pure returns (string memory) {\n        unchecked {\n            uint256 length = Math.log10(value) + 1;\n            string memory buffer = new string(length);\n            uint256 ptr;\n            assembly {\n                ptr := add(buffer, add(32, length))\n            }\n            while (true) {\n                ptr--;\n                assembly {\n                    mstore8(ptr, byte(mod(value, 10), _SYMBOLS))\n                }\n                value /= 10;\n                if (value == 0) break;\n            }\n            return buffer;\n        }\n    }\nfunction uri(uint256) public view virtual override returns (string memory) {\n        return _uri;\n    }",
+    "rewritten_code": {
+      "uri(uint256)": "function uri(uint256 tokenId) public view override returns (string memory) {\n        return super.uri(tokenId);\n    }"
+    }
+  }
+]

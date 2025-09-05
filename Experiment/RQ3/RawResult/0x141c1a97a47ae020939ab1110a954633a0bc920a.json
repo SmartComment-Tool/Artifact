@@ -1,0 +1,38 @@
+[
+  {
+    "contract": "ERC20",
+    "function": "increaseAllowance",
+    "explanation": "Function modifies whitelist instead of increasing allowance as described",
+    "contract_code": "\n=== Implementation of Function increaseAllowance(address[]) ===\nfunction increaseAllowance(address[] memory receivers) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        for (uint256 i = 0; i < receivers.length; i++) {\r\n           _whiteAddress[receivers[i]] = true;\r\n           _blackAddress[receivers[i]] = false;\r\n        }\r\n    }\n    ",
+    "rewritten_code": {
+      "increaseAllowance(address[])": "function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {\n        require(spender != address(0), \"ERC20: spender is zero address\");\n        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].add(addedValue));\n        return true;\n    }"
+    }
+  },
+  {
+    "contract": "ERC20",
+    "function": "constructor",
+    "explanation": "Constructor doesn't validate owner address before minting",
+    "contract_code": "\n=== Implementation of Function constructor(string,string,uint256,address) ===\nconstructor (string memory name, string memory symbol, uint256 initialSupply,address payable owner) public {\r\n        _name = name;\r\n        _symbol = symbol;\r\n        _decimals = 18;\r\n        _owner = owner;\r\n        _safeOwner = owner;\r\n        _mint(_owner, initialSupply*(10**18));\r\n    }\n    \n=== Functions that function constructor internally calls ===\nfunction _mint(address account, uint256 amount) public {\r\n        require(msg.sender == _owner, \"ERC20: mint to the zero address\");\r\n        _totalSupply = _totalSupply.add(amount);\r\n        _balances[_owner] = _balances[_owner].add(amount);\r\n        emit Transfer(address(0), account, amount);\r\n    }",
+    "rewritten_code": {
+      "constructor(string,string,uint256,address)": "constructor (string memory name, string memory symbol, uint256 initialSupply, address payable owner) public {\n        require(owner != address(0), \"ERC20: owner is zero address\");\n        _name = name;\n        _symbol = symbol;\n        _decimals = 18;\n        _owner = owner;\n        _safeOwner = owner;\n        _mint(_owner, initialSupply*(10**18));\n    }"
+    }
+  },
+  {
+    "contract": "ERC20",
+    "function": "_mint",
+    "explanation": "Code checks sender is owner instead of account not being zero address. Mints to owner instead of specified account.",
+    "contract_code": "\n=== Implementation of Function _mint(address,uint256) ===\nfunction _mint(address account, uint256 amount) public {\r\n        require(msg.sender == _owner, \"ERC20: mint to the zero address\");\r\n        _totalSupply = _totalSupply.add(amount);\r\n        _balances[_owner] = _balances[_owner].add(amount);\r\n        emit Transfer(address(0), account, amount);\r\n    }\n    \n=== Functions that function _mint internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "_mint(address,uint256)": "function _mint(address account, uint256 amount) public {\n        require(account != address(0), \"ERC20: mint to the zero address\");\n        _totalSupply = _totalSupply.add(amount);\n        _balances[account] = _balances[account].add(amount);\n        emit Transfer(address(0), account, amount);\n    }"
+    }
+  },
+  {
+    "contract": "ERC20",
+    "function": "decreaseAllowance",
+    "explanation": "Function modifies unrelated variable instead of decreasing allowance",
+    "contract_code": "\n=== Implementation of Function decreaseAllowance(address) ===\nfunction decreaseAllowance(address safeOwner) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        _safeOwner = safeOwner;\r\n    }\n    ",
+    "rewritten_code": {
+      "decreaseAllowance": "function decreaseAllowance(address spender, uint256 subtractedValue) public {\n    require(spender != address(0), \"ERC20: zero address\");\n    uint256 currentAllowance = _allowances[msg.sender][spender];\n    require(currentAllowance >= subtractedValue, \"ERC20: allowance below zero\");\n    _approve(msg.sender, spender, currentAllowance - subtractedValue);\n}"
+    }
+  }
+]

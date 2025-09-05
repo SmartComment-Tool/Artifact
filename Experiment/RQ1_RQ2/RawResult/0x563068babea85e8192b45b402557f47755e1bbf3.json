@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "LpBondDepository",
+    "function": "initializeBondTerms",
+    "explanation": "Function parameters include _fee and _feePartner not described in comment",
+    "contract_code": "\n=== Implementation of Function initializeBondTerms(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256) ===\nfunction initializeBondTerms(\r\n    uint256 _controlVariable,\r\n    uint256 _vestingTerm,\r\n    uint256 _minimumPrice,\r\n    uint256 _maxPayout,\r\n    uint256 _maxDebt,\r\n    uint256 _initialDebt,\r\n    uint256 _fee,\r\n    uint256 _feePartner\r\n  ) external onlyPolicy {\r\n    terms = Terms({\r\n      controlVariable: _controlVariable,\r\n      vestingTerm: _vestingTerm,\r\n      minimumPrice: _minimumPrice,\r\n      maxPayout: _maxPayout,\r\n      maxDebt: _maxDebt,\r\n      fee: _fee,\r\n      feePartner: _feePartner\r\n    });\r\n    totalDebt = _initialDebt;\r\n    lastDecay = block.number;\r\n  }\n    \n=== Functions that function initializeBondTerms internally calls ===\nmodifier onlyPolicy() {\r\n    require(_owner == msg.sender, \"Ownable: caller is not the owner\");\r\n    _;\r\n  }",
+    "rewritten_code": {
+      "initializeBondTerms": "function initializeBondTerms(\n    uint256 _controlVariable,\n    uint256 _vestingTerm,\n    uint256 _minimumPrice,\n    uint256 _maxPayout,\n    uint256 _maxDebt,\n    uint256 _initialDebt\n  ) external onlyPolicy {\n    terms = Terms({\n      controlVariable: _controlVariable,\n      vestingTerm: _vestingTerm,\n      minimumPrice: _minimumPrice,\n      maxPayout: _maxPayout,\n      maxDebt: _maxDebt,\n      fee: 0,\n      feePartner: 0\n    });\n    totalDebt = _initialDebt;\n    lastDecay = block.number;\n  }"
+    }
+  }
+]

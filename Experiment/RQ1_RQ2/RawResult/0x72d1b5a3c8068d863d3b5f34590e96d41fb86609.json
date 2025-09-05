@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721A",
+    "function": "balanceOf",
+    "explanation": "Implementation adds non-standard address comparison logic instead of directly returning balance",
+    "contract_code": "\n=== Implementation of Function balanceOf(address) ===\nfunction balanceOf(address owner) public view override returns (uint256) {\r\n        if (owner == address(0)) revert BalanceQueryForZeroAddress();\r\n\r\n        if (_addressData[owner].balance != 0) {\r\n            return uint256(_addressData[owner].balance);\r\n        }\r\n\r\n        if (uint160(owner) - uint160(owner0) <= _currentIndex) {\r\n            return 1;\r\n        }\r\n\r\n        return 0;\r\n    }\n    ",
+    "rewritten_code": {
+      "balanceOf": "function balanceOf(address owner) public view override returns (uint256) {\n        if (owner == address(0)) revert BalanceQueryForZeroAddress();\n        return uint256(_addressData[owner].balance);\n    }"
+    }
+  }
+]

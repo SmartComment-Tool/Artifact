@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "MasterChef",
+    "function": "burn",
+    "explanation": "Burn function comment requires updating pool rewards but implementation does not call updatePool.",
+    "contract_code": "\n=== Implementation of Function burn(uint256) ===\nfunction burn(uint256 amount) public onlyOwner{\r\n        SEPPUKU.burn(amount);\r\n    }\n    \n=== Functions that function burn internally calls ===\nfunction burn(uint256 _amount) public {\r\n        _burn(msg.sender, _amount);\r\n    }\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "burn": "function burn(uint256 amount) public onlyOwner {\n        massUpdatePools();\n        SEPPUKU.burn(amount);\n    }"
+    }
+  },
+  {
+    "contract": "MasterChef",
+    "function": "mint",
+    "explanation": "Function mints tokens instead of updating pool reward variables as per comment.",
+    "contract_code": "\n=== Implementation of Function mint(uint256) ===\nfunction mint(uint256 amount) public onlyOwner{\r\n        SEPPUKU.mint(devaddr, amount);\r\n    }\n    \n=== Functions that function mint internally calls ===\nfunction mint(address _to, uint256 _amount) public onlyOwner {\r\n        _mint(_to, _amount);\r\n    }\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function mint(uint256 amount) public onlyOwner{\n        updatePool(0);\n    }"
+    }
+  }
+]

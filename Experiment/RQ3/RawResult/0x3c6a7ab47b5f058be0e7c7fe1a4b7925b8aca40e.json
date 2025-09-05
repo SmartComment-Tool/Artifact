@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "ERC20",
+    "function": "ERC20",
+    "explanation": "Comment specifies tokens go to creator, but implementation uses conditional transfer",
+    "contract_code": "\n=== Implementation of Function ERC20(uint256,string,uint8,string,bool,bool) ===\nfunction ERC20(\r\n        uint256 _totalSupply,\r\n        string tokenName,\r\n        uint8 decimalUnits,\r\n        string tokenSymbol,\r\n        bool transferAllSupplyToOwner,\r\n        bool _locked\r\n    ) public {\r\n        standard = \"ERC20 0.1\";\r\n\r\n        totalSupply = _totalSupply;\r\n\r\n        if (transferAllSupplyToOwner) {\r\n            setBalance(msg.sender, totalSupply);\r\n\r\n            Transfer(0, msg.sender, totalSupply);\r\n        } else {\r\n            setBalance(this, totalSupply);\r\n\r\n            Transfer(0, this, totalSupply);\r\n        }\r\n\r\n        name = tokenName;\r\n        symbol = tokenSymbol;\r\n        decimals = decimalUnits;\r\n        locked = _locked;\r\n        creationBlock = block.number;\r\n    }\n    \n=== Functions that function ERC20 internally calls ===\nfunction setBalance(address holder, uint256 amount) internal {\r\n        balanceOf[holder] = amount;\r\n    }",
+    "rewritten_code": {
+      "ERC20(uint256,string,uint8,string,bool,bool)": "function ERC20(\n        uint256 _totalSupply,\n        string tokenName,\n        uint8 decimalUnits,\n        string tokenSymbol,\n        bool transferAllSupplyToOwner,\n        bool _locked\n    ) public {\n        standard = \"ERC20 0.1\";\n        totalSupply = _totalSupply;\n        setBalance(msg.sender, totalSupply);\n        Transfer(0, msg.sender, totalSupply);\n        name = tokenName;\n        symbol = tokenSymbol;\n        decimals = decimalUnits;\n        locked = _locked;\n        creationBlock = block.number;\n    }"
+    }
+  },
+  {
+    "contract": "LoggedERC20",
+    "function": "LoggedERC20",
+    "explanation": "Comment specifies tokens go to creator, but code allows redirect via parameter",
+    "contract_code": "\n=== Implementation of Function LoggedERC20(uint256,string,uint8,string,bool,bool) ===\nfunction LoggedERC20(\r\n        uint256 initialSupply,\r\n        string tokenName,\r\n        uint8 decimalUnits,\r\n        string tokenSymbol,\r\n        bool transferAllSupplyToOwner,\r\n        bool _locked\r\n    )\tpublic\r\n        ERC20(initialSupply, tokenName, decimalUnits, tokenSymbol, transferAllSupplyToOwner, _locked)\r\n    {\r\n        standard = \"LogValueBlockToken 0.1\";\r\n    }\n    \n=== Functions that function LoggedERC20 internally calls ===\nfunction ERC20(\r\n        uint256 _totalSupply,\r\n        string tokenName,\r\n        uint8 decimalUnits,\r\n        string tokenSymbol,\r\n        bool transferAllSupplyToOwner,\r\n        bool _locked\r\n    ) public {\r\n        standard = \"ERC20 0.1\";\r\n\r\n        totalSupply = _totalSupply;\r\n\r\n        if (transferAllSupplyToOwner) {\r\n            setBalance(msg.sender, totalSupply);\r\n\r\n            Transfer(0, msg.sender, totalSupply);\r\n        } else {\r\n            setBalance(this, totalSupply);\r\n\r\n            Transfer(0, this, totalSupply);\r\n        }\r\n\r\n        name = tokenName;\r\n        symbol = tokenSymbol;\r\n        decimals = decimalUnits;\r\n        locked = _locked;\r\n        creationBlock = block.number;\r\n    }",
+    "rewritten_code": {
+      "LoggedERC20": "function LoggedERC20(\n        uint256 initialSupply,\n        string tokenName,\n        uint8 decimalUnits,\n        string tokenSymbol,\n        bool transferAllSupplyToOwner,\n        bool _locked\n    )\tpublic\n        ERC20(initialSupply, tokenName, decimalUnits, tokenSymbol, true, _locked)\n    {\n        standard = \"LogValueBlockToken 0.1\";\n    }"
+    }
+  }
+]

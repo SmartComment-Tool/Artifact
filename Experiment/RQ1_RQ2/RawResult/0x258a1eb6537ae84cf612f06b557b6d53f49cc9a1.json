@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Tunnel",
+    "function": "setLockDuration",
+    "explanation": "Missing check ensuring new duration exceeds current lockDuration",
+    "contract_code": "\n=== Implementation of Function setLockDuration(uint256) ===\nfunction setLockDuration(uint duration) public onlyOwner {\r\n        lockDuration = duration;\r\n    }\n    \n=== Functions that function setLockDuration internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function setLockDuration(uint duration) public onlyOwner {\n        require(duration > lockDuration, \"Duration must increase\");\n        lockDuration = duration;\n    }"
+    }
+  }
+]

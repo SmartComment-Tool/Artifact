@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721A",
+    "function": "tokenByIndex",
+    "explanation": "Missing index validation against total supply",
+    "contract_code": "\n=== Implementation of Function tokenByIndex(uint256) ===\nfunction tokenByIndex(uint256 index) public view override returns (uint256) {\n        uint256 numMintedSoFar = _currentIndex;\n        uint256 tokenIdsIdx;\n\n        unchecked {\n            for (uint256 i; i < numMintedSoFar; i++) {\n                TokenOwnership memory ownership = _ownerships[i];\n                if (!ownership.burned) {\n                    if (tokenIdsIdx == index) {\n                        return i;\n                    }\n                    tokenIdsIdx++;\n                }\n            }\n        }\n        revert TokenIndexOutOfBounds();\n    }\n    ",
+    "rewritten_code": {
+      "tokenByIndex(uint256)": "function tokenByIndex(uint256 index) public view override returns (uint256) {\n        if (index >= totalSupply()) revert TokenIndexOutOfBounds();\n        uint256 numMintedSoFar = _currentIndex;\n        uint256 tokenIdsIdx;\n\n        unchecked {\n            for (uint256 i; i < numMintedSoFar; i++) {\n                TokenOwnership memory ownership = _ownerships[i];\n                if (!ownership.burned) {\n                    if (tokenIdsIdx == index) {\n                        return i;\n                    }\n                    tokenIdsIdx++;\n                }\n            }\n        }\n        revert TokenIndexOutOfBounds();\n    }"
+    }
+  }
+]

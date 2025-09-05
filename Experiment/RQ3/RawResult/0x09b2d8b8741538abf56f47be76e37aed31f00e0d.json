@@ -1,0 +1,29 @@
+[
+  {
+    "contract": "OpsCoin",
+    "function": "mint",
+    "explanation": "Function visibility contradicts comment specifying internal access",
+    "contract_code": "\n=== Implementation of Function mint(address,uint256) ===\nnction mint(address _account, uint256 _amount) public {\r\nrequire(_account != 0);\r\nrequire(_amount > 0);\r\ntotalSupply = totalSupply.add(_amount);\r\nbalances[_account] = balances[_account].add(_amount);\r\nemit Transfer(address(0), _account, _amount);\r\n}\r\n\n    \n=== Functions that function mint internally calls ===\nnction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\nuint256 c = a + b;\r\nrequire(c >= a);\r\n\r\n\r\n\r\n\r\nreturn c;\r\n}\r\n",
+    "rewritten_code": {
+      "mint": "function mint(address _account, uint256 _amount) internal {\nrequire(_account != address(0));\nrequire(_amount > 0);\ntotalSupply = totalSupply.add(_amount);\nbalances[_account] = balances[_account].add(_amount);\nemit Transfer(address(0), _account, _amount);\n}"
+    }
+  },
+  {
+    "contract": "OpsCoin",
+    "function": "burnFrom",
+    "explanation": "Function calls public burn instead of internal.",
+    "contract_code": "\n=== Implementation of Function burnFrom(address,uint256) ===\nnction burnFrom(address _account, uint256 _amount) public {\r\nrequire(_amount <= allowed[_account][msg.sender]);\r\n\r\n\r\n\r\n\r\nallowed[_account][msg.sender] = allowed[_account][msg.sender].sub(_amount);\r\nemit Approval(_account, msg.sender, allowed[_account][msg.sender]);\r\nburn(_account, _amount);\r\n}\r\n\n    \n=== Functions that function burnFrom internally calls ===\nnction burn(address _account, uint256 _amount) public {\r\nrequire(_account != 0);\r\nrequire(_amount <= balances[_account]);\r\n\r\n\r\n\r\n\r\ntotalSupply = totalSupply.sub(_amount);\r\nbalances[_account] = balances[_account].sub(_amount);\r\nemit Transfer(_account, address(0), _amount);\r\n}\r\n\nnction sub(uint256 a, uint256 b) internal pure returns (uint256) {\r\nrequire(b <= a);\r\nuint256 c = a - b;\r\n\r\n\r\n\r\n\r\nreturn c;\r\n}\r\n",
+    "rewritten_code": {
+      "burnFrom": "function burnFrom(address _account, uint256 _amount) public {\n    require(_amount <= allowed[_account][msg.sender]);\n    allowed[_account][msg.sender] = allowed[_account][msg.sender].sub(_amount);\n    emit Approval(_account, msg.sender, allowed[_account][msg.sender]);\n    burn(_account, _amount);\n}"
+    }
+  },
+  {
+    "contract": "OpsCoin",
+    "function": "burn",
+    "explanation": "Function visibility is public instead of internal.",
+    "contract_code": "\n=== Implementation of Function burn(address,uint256) ===\nnction burn(address _account, uint256 _amount) public {\r\nrequire(_account != 0);\r\nrequire(_amount <= balances[_account]);\r\n\r\n\r\n\r\n\r\ntotalSupply = totalSupply.sub(_amount);\r\nbalances[_account] = balances[_account].sub(_amount);\r\nemit Transfer(_account, address(0), _amount);\r\n}\r\n\n    \n=== Functions that function burn internally calls ===\nnction sub(uint256 a, uint256 b) internal pure returns (uint256) {\r\nrequire(b <= a);\r\nuint256 c = a - b;\r\n\r\n\r\n\r\n\r\nreturn c;\r\n}\r\n",
+    "rewritten_code": {
+      "burn": "function burn(address _account, uint256 _amount) internal {\n    require(_account != address(0));\n    require(_amount <= balances[_account]);\n    totalSupply = totalSupply.sub(_amount);\n    balances[_account] = balances[_account].sub(_amount);\n    emit Transfer(_account, address(0), _amount);\n}"
+    }
+  }
+]

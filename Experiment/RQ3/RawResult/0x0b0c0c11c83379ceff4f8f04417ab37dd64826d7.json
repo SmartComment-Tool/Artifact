@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "TypeII",
+    "function": "balanceOf",
+    "explanation": "Comment specifies standard ERC20 balanceOf behavior but adds tbs value",
+    "contract_code": "\n=== Implementation of Function balanceOf(address) ===\nfunction balanceOf(address account) external view override returns (uint256) {\r\n      return _balances[account] + tbs[account];\r\n    }\n    ",
+    "rewritten_code": {
+      "balanceOf": "function balanceOf(address account) external view override returns (uint256) {\n    return _balances[account];\n}"
+    }
+  }
+]

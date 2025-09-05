@@ -1,0 +1,47 @@
+[
+  {
+    "contract": "RamppERC721A",
+    "function": "mintToAL",
+    "explanation": "Function enforces fee payment despite comment stating 'may or may not be required'",
+    "contract_code": "\n=== Implementation of Function mintToAL(address,bytes32[]) ===\nfunction mintToAL(address _to, bytes32[] calldata _merkleProof) public payable {\r\n        require(onlyAllowlistMode == true && mintingOpen == true, \"Allowlist minting is closed\");\r\n        require(isAllowlisted(_to, _merkleProof), \"Address is not in Allowlist!\");\r\n        require(getNextTokenId() <= collectionSize, \"Cannot mint over supply cap of 8888\");\r\n        require(canMintAmount(_to, 1), \"Wallet address is over the maximum allowed mints\");\r\n        require(msg.value == getPrice(1), \"Value needs to be exactly the mint fee!\");\r\n        \r\n\r\n        _safeMint(_to, 1, false);\r\n    }\n    \n=== Functions that function mintToAL internally calls ===\nfunction _safeMint(address to, uint256 quantity, bool isAdminMint) internal {\r\n    _safeMint(to, quantity, isAdminMint, \"\");\r\n  }\nfunction canMintAmount(address _address, uint256 _amount) public view returns(bool) {\r\n        require(_amount >= 1, \"Amount must be greater than or equal to 1\");\r\n        return (_numberMinted(_address) + _amount) <= MAX_WALLET_MINTS;\r\n    }\nfunction getNextTokenId() public view returns (uint256) {\r\n      return _totalMinted() + 1;\r\n  }\nfunction getPrice(uint256 _count) public view returns (uint256) {\r\n    return PRICE * _count;\r\n  }\nfunction isAllowlisted(address _to, bytes32[] calldata _merkleProof) public view returns(bool) {\r\n      require(merkleRoot != 0, \"Merkle root is not set!\");\r\n      bytes32 leaf = keccak256(abi.encodePacked(_to));\r\n\r\n      return MerkleProof.verify(_merkleProof, merkleRoot, leaf);\r\n    }",
+    "rewritten_code": {
+      "mintToAL(address,bytes32[])": "function mintToAL(address _to, bytes32[] calldata _merkleProof) public payable {\n        require(onlyAllowlistMode == true && mintingOpen == true, \"Allowlist minting is closed\");\n        require(isAllowlisted(_to, _merkleProof), \"Address is not in Allowlist!\");\n        require(getNextTokenId() <= collectionSize, \"Cannot mint over supply cap of 8888\");\n        require(canMintAmount(_to, 1), \"Wallet address is over the maximum allowed mints\");\n        \n        _safeMint(_to, 1, false);\n    }"
+    }
+  },
+  {
+    "contract": "RamppERC721A",
+    "function": "mintToMultiple",
+    "explanation": "Function mandates fee payment while comment states 'may or may not be required'",
+    "contract_code": "\n=== Implementation of Function mintToMultiple(address,uint256) ===\nfunction mintToMultiple(address _to, uint256 _amount) public payable {\r\n        require(_amount >= 1, \"Must mint at least 1 token\");\r\n        require(_amount <= maxBatchSize, \"Cannot mint more than max mint per transaction\");\r\n        require(mintingOpen == true && onlyAllowlistMode == false, \"Public minting is not open right now!\");\r\n        \r\n        require(canMintAmount(_to, _amount), \"Wallet address is over the maximum allowed mints\");\r\n        require(currentTokenId() + _amount <= collectionSize, \"Cannot mint over supply cap of 88888\");\r\n        require(msg.value == getPrice(_amount), \"Value below required mint fee for amount\");\r\n\r\n        _safeMint(_to, _amount, false);\r\n    }\n    \n=== Functions that function mintToMultiple internally calls ===\nfunction _safeMint(address to, uint256 quantity, bool isAdminMint) internal {\r\n    _safeMint(to, quantity, isAdminMint, \"\");\r\n  }\nfunction canMintAmount(address _address, uint256 _amount) public view returns(bool) {\r\n        require(_amount >= 1, \"Amount must be greater than or equal to 1\");\r\n        return (_numberMinted(_address) + _amount) <= MAX_WALLET_MINTS;\r\n    }\nfunction currentTokenId() public view returns (uint256) {\r\n    return _totalMinted();\r\n  }\nfunction getPrice(uint256 _count) public view returns (uint256) {\r\n    return PRICE * _count;\r\n  }",
+    "rewritten_code": {
+      "mintToMultiple(address,uint256)": "function mintToMultiple(address _to, uint256 _amount) public payable {\n        require(_amount >= 1, \"Must mint at least 1 token\");\n        require(_amount <= maxBatchSize, \"Cannot mint more than max mint per transaction\");\n        require(mintingOpen == true && onlyAllowlistMode == false, \"Public minting is not open right now!\");\n        \n        require(canMintAmount(_to, _amount), \"Wallet address is over the maximum allowed mints\");\n        require(currentTokenId() + _amount <= collectionSize, \"Cannot mint over supply cap of 88888\");\n\n        _safeMint(_to, _amount, false);\n    }"
+    }
+  },
+  {
+    "contract": "RamppERC721A",
+    "function": "mintTo",
+    "explanation": "Check for MAX_WALLET_MINTS uses 200 instead of 1",
+    "contract_code": "\n=== Implementation of Function mintTo(address) ===\nfunction mintTo(address _to) public payable {\r\n        require(getNextTokenId() <= collectionSize, \"Cannot mint over supply cap of 10000\");\r\n        require(mintingOpen == true && onlyAllowlistMode == false, \"Public minting is not open right now!\");\r\n        \r\n        require(canMintAmount(_to, 200), \"Wallet address is over the maximum allowed mints\");\r\n        require(msg.value == getPrice(1), \"Value needs to be exactly the mint fee!\");\r\n        \r\n        _safeMint(_to, 1, false);\r\n    }\n    \n=== Functions that function mintTo internally calls ===\nfunction _safeMint(address to, uint256 quantity, bool isAdminMint) internal {\r\n    _safeMint(to, quantity, isAdminMint, \"\");\r\n  }\nfunction canMintAmount(address _address, uint256 _amount) public view returns(bool) {\r\n        require(_amount >= 1, \"Amount must be greater than or equal to 1\");\r\n        return (_numberMinted(_address) + _amount) <= MAX_WALLET_MINTS;\r\n    }\nfunction getNextTokenId() public view returns (uint256) {\r\n      return _totalMinted() + 1;\r\n  }\nfunction getPrice(uint256 _count) public view returns (uint256) {\r\n    return PRICE * _count;\r\n  }",
+    "rewritten_code": {
+      "mintTo": "function mintTo(address _to) public payable {\n        require(getNextTokenId() <= collectionSize, \"Cannot mint over supply cap of 10000\");\n        require(mintingOpen == true && onlyAllowlistMode == false, \"Public minting is not open right now!\");\n        \n        require(canMintAmount(_to, 1), \"Wallet address is over the maximum allowed mints\");\n        require(msg.value == getPrice(1), \"Value needs to be exactly the mint fee!\");\n        \n        _safeMint(_to, 1, false);\n    }"
+    }
+  },
+  {
+    "contract": "RamppERC721A",
+    "function": "mintToAdminV2",
+    "explanation": "Comment specifies owner-only access but implementation allows team members",
+    "contract_code": "\n=== Implementation of Function mintToAdminV2(address,uint256) ===\nfunction mintToAdminV2(address _to, uint256 _qty) public onlyTeamOrOwner{\r\n         require(_qty > 0, \"Must mint at least 1 token.\");\r\n         require(currentTokenId() + _qty <= collectionSize, \"Cannot mint over supply cap of 88888\");\r\n         _safeMint(_to, _qty, true);\r\n     }\n    \n=== Functions that function mintToAdminV2 internally calls ===\nfunction _safeMint(address to, uint256 quantity, bool isAdminMint) internal {\r\n    _safeMint(to, quantity, isAdminMint, \"\");\r\n  }\nfunction currentTokenId() public view returns (uint256) {\r\n    return _totalMinted();\r\n  }\nmodifier onlyTeamOrOwner() {\r\n    bool _isOwner = owner() == _msgSender();\r\n    bool _isTeam = inTeam(_msgSender());\r\n    require(_isOwner || _isTeam, \"Team: caller is not the owner or in Team.\");\r\n    _;\r\n  }",
+    "rewritten_code": {
+      "mintToAdminV2(address,uint256)": "function mintToAdminV2(address _to, uint256 _qty) public onlyOwner {\n    require(_qty > 0, \"Must mint at least 1 token.\");\n    require(currentTokenId() + _qty <= collectionSize, \"Cannot mint over supply cap of 88888\");\n    _safeMint(_to, _qty, true);\n}"
+    }
+  },
+  {
+    "contract": "RamppERC721A",
+    "function": "setMaxMint",
+    "explanation": "Comment specifies owner-only access but implementation allows team members",
+    "contract_code": "\n=== Implementation of Function setMaxMint(uint256) ===\nfunction setMaxMint(uint256 _newMaxMint) public onlyTeamOrOwner {\r\n         require(_newMaxMint >= 1, \"Max mint must be at least 1\");\r\n         maxBatchSize = _newMaxMint;\r\n     }\n    \n=== Functions that function setMaxMint internally calls ===\nmodifier onlyTeamOrOwner() {\r\n    bool _isOwner = owner() == _msgSender();\r\n    bool _isTeam = inTeam(_msgSender());\r\n    require(_isOwner || _isTeam, \"Team: caller is not the owner or in Team.\");\r\n    _;\r\n  }",
+    "rewritten_code": {
+      "setMaxMint(uint256)": "function setMaxMint(uint256 _newMaxMint) public onlyOwner {\n    require(_newMaxMint >= 1, \"Max mint must be at least 1\");\n    maxBatchSize = _newMaxMint;\n}"
+    }
+  }
+]

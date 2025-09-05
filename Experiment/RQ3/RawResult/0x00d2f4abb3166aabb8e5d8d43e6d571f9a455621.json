@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC1363",
+    "function": "approveAndCall",
+    "explanation": "Approval race condition mitigation not implemented per comment",
+    "contract_code": "\n=== Implementation of Function approveAndCall(address,uint256,bytes) ===\nfunction approveAndCall(address spender, uint256 value, bytes memory data) public override returns (bool) {\r\n        approve(spender, value);\r\n        require(_checkAndCallApprove(spender, value, data), \"ERC1363: _checkAndCallApprove reverts\");\r\n        return true;\r\n    }\n    \n=== Functions that function approveAndCall internally calls ===\nfunction _checkAndCallApprove(address spender, uint256 value, bytes memory data) internal returns (bool) {\r\n        if (!spender.isContract()) {\r\n            return false;\r\n        }\r\n        bytes4 retval = IERC1363Spender(spender).onApprovalReceived(\r\n            _msgSender(), value, data\r\n        );\r\n        return (retval == _ERC1363_APPROVED);\r\n    }\nfunction approve(address spender, uint256 amount) public virtual override returns (bool) {\r\n        _approve(_msgSender(), spender, amount);\r\n        return true;\r\n    }",
+    "rewritten_code": {
+      "approveAndCall(address,uint256,bytes)": "function approveAndCall(address spender, uint256 value, bytes memory data) public override returns (bool) {\n        approve(spender, 0);\n        approve(spender, value);\n        require(_checkAndCallApprove(spender, value, data), \"ERC1363: _checkAndCallApprove reverts\");\n        return true;\n    }"
+    }
+  }
+]

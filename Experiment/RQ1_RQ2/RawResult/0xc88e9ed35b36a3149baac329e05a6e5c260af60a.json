@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "BENNATION",
+    "function": "updateSwapEnabled",
+    "explanation": "Function allows enabling swaps contrary to emergency-only disable intent",
+    "contract_code": "\n=== Implementation of Function updateSwapEnabled(bool) ===\n      swapEnabled = enabled;\r\n    }\r\n    \r\n    function updateBuyFees(uint256 _MarketingFee, uint256 \n    \n=== Functions that function updateSwapEnabled internally calls ===\nwnable: caller is not the owner\");\r\n        _;\r\n    }\r\n\r",
+    "rewritten_code": {
+      "updateSwapEnabled(bool)": "function updateSwapEnabled(bool enabled) external onlyOwner {\n        require(enabled == false, \"Cannot enable swaps\");\n        swapEnabled = enabled;\n    }"
+    }
+  }
+]

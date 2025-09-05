@@ -1,0 +1,56 @@
+[
+  {
+    "contract": "DN2",
+    "function": "getCurrentIndex",
+    "explanation": "Function implementation missing; shows URI setter instead of index getter.",
+    "contract_code": "\n=== Implementation of Function getCurrentIndex() ===\n(string memory uri_) external virtual onlyOperator {\r\n    _baseTokenURI = uri_;\r\n  }\r\n\r\n\r\n  function se\n    \n=== Functions that function getCurrentIndex internally calls ===\ntion _nextTokenId() internal view virtual returns (uint256) {\r\n        return _currentIndex;\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "getCurrentIndex()": "function getCurrentIndex() external view returns (uint256) {\n    return _nextTokenId();\n}"
+    }
+  },
+  {
+    "contract": "DN2",
+    "function": "publicMintMP",
+    "explanation": "Public mint requires whitelist check contradicting comment",
+    "contract_code": "\n=== Implementation of Function publicMintMP(uint256,bytes32[]) ===\nire(isPubliclisted(msg.sender, proof_), \"You are not whitelisted!\");\r\n    require(maxMintsPerPSOT >= _amount, \"publicMint: Over max mints per one time\");\r\n    require(maxMintsPerPS >= _amount, \"publicMint: Over max mints per wallet\");\r\n    require(maxMintsPerPS >= _psMinted[nowPhasePs][msg.sender] + _amount, \"You have no publicMint left\");\r\n    require(msg.value == psMintPrice * _amount, \"ETH value is not correct\");\r\n    require((_amount + totalSupply()) <= (mintable) || mintable == 0, \"No more NFTs\");\r\n    require((_amount + totalSupply()) <= (maxSupply) || maxSupply == 0, \"No more NFTs\");\r\n    _psMinted[nowPhasePs][msg.sender] += _amount;\r\n    _safeMint(msg.sender, _amount);\r\n  }\r\n\r\n  function burn(uint256 tokenId) external virtual {\r\n    _burn(tokenId);\r\n  }\r\n\r\n  function receiveToDeb() external payable virtual nonReentrant {\n    \n=== Functions that function publicMintMP internally calls ===\nfier nonReentrant() {\r\n        _nonReentrantBefore();\r\n        _;\r\n        _nonReentrantAfter();\r\n    }\r\n\r\n\ntion _safeMint(address to, uint256 quantity) internal virtual {\r\n        _safeMint(to, quantity, \"\");\r\n    }\r\n\r\n\ntion isPubliclisted(address address_, bytes32[] memory proof_) public view returns (bool) {\r\n        bytes32 _leaf = keccak256(abi.encodePacked(address_));\r\n        for (uint256 i = 0; i < proof_.length; i++) {\r\n            _leaf = _leaf < proof_[i] ? keccak256(abi.encodePacked(_leaf, proof_[i])) : keccak256(abi.encodePacked(proof_[i], _leaf));\r\n        }\r\n        return _leaf == _pbMerkleRoot;\r\n    }\r\n\r\n\ntion totalSupply() public view virtual override returns (uint256) {\r\n        return _totalMinted() - _burned();\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "publicMintMP": "function publicMintMP(uint256 _amount, bytes32[] memory proof_) external payable virtual nonReentrant {\n    require(maxMintsPerPSOT >= _amount, \"publicMint: Over max mints per one time\");\n    require(maxMintsPerPS >= _amount, \"publicMint: Over max mints per wallet\");\n    require(maxMintsPerPS >= _psMinted[nowPhasePs][msg.sender] + _amount, \"You have no publicMint left\");\n    require(msg.value == psMintPrice * _amount, \"ETH value is not correct\");\n    require((_amount + totalSupply()) <= (mintable) || mintable == 0, \"No more NFTs\");\n    require((_amount + totalSupply()) <= (maxSupply) || maxSupply == 0, \"No more NFTs\");\n    _psMinted[nowPhasePs][msg.sender] += _amount;\n    _safeMint(msg.sender, _amount);\n  }"
+    }
+  },
+  {
+    "contract": "DN2",
+    "function": "setMaxSupply",
+    "explanation": "Comment specifies only owner access, but function uses onlyOperator modifier.",
+    "contract_code": "\n=== Implementation of Function setMaxSupply(uint256) ===\ny;\r\n  }\r\n  function setMintable(uint256 _mintable) external virtual onlyOperator {\r\n    require(totalSupply() <= _mintable, \"Lower than _currentIndex.\");\r\n    mintable = _mintable\n    \n=== Functions that function setMaxSupply internally calls ===\nfier onlyOperator() {\r\n        _checkOperatorRole(_msgSender());\r\n        _;\r\n    }\r\n  \ntion totalSupply() public view virtual override returns (uint256) {\r\n        return _totalMinted() - _burned();\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "setMaxSupply(uint256)": "function setMaxSupply(uint256 _maxSupply) external virtual onlyOwner {\n    maxSupply = _maxSupply;\n}"
+    }
+  },
+  {
+    "contract": "DN2",
+    "function": "setHiddenURI",
+    "explanation": "Comment requires only owner access, implementation lacks access control.",
+    "contract_code": "\n=== Implementation of Function setHiddenURI(string) ===\nvirtual returns (uint256){\r\n    return _nextTokenId() -1;\r\n  }\r\n\r\n    \n=== Functions that function setHiddenURI internally calls ===\nfier onlyOperator() {\r\n        _checkOperatorRole(_msgSender());\r\n        _;\r\n    }\r\n  ",
+    "rewritten_code": {
+      "setHiddenURI(string)": "function setHiddenURI(string memory uri_) external virtual onlyOwner {\n    hiddenURI = uri_;\n}"
+    }
+  },
+  {
+    "contract": "DN2",
+    "function": "ownerMint",
+    "explanation": "Uses operator access instead of owner",
+    "contract_code": "\n=== Implementation of Function ownerMint(uint256,address) ===\n);\r\n    _safeMint(_address, _amount);\r\n  }\r\n\r\n\r\n  function whitelistMint(uint256 _amount, bytes32[] memory proof_) external payable virtual nonReentrant {\r\n    require(isWlSaleEnabled, \"whitelistMint is\n    \n=== Functions that function ownerMint internally calls ===\nfier onlyOperator() {\r\n        _checkOperatorRole(_msgSender());\r\n        _;\r\n    }\r\n  \ntion _safeMint(address to, uint256 quantity) internal virtual {\r\n        _safeMint(to, quantity, \"\");\r\n    }\r\n\r\n\ntion totalSupply() public view virtual override returns (uint256) {\r\n        return _totalMinted() - _burned();\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "ownerMint": "function ownerMint(uint256 _amount, address _address) external virtual onlyOwner {\n    _safeMint(_address, _amount);\n}"
+    }
+  },
+  {
+    "contract": "DN2",
+    "function": "walletOfOwner",
+    "explanation": "Loop condition excludes last token ID, missing owned tokens.",
+    "contract_code": "\n=== Implementation of Function walletOfOwner(address) ===\n = new uint256[](ownerTokenCount);\r\n    uint256 tokenindex = 0;\r\n    for (uint256 i = _startTokenId(); i < (_nextTokenId() -1); i++) {\r\n      if(_address == this.tryOwnerOf(i)) tokenIds[tokenindex++] = i;\r\n    }\r\n    return tokenIds;\r\n  }\r\n\r\n  function tryOwnerOf(uint256 tokenId) external view  virtual returns (address) {\r\n    try this.ownerOf(tokenId) \n    \n=== Functions that function walletOfOwner internally calls ===\nefaultRoyalty(address _receiver, uint96 _feeNumerator) external virtual onlyOperator {\r\n      _setD\ntch {\r\n        return (address(0));//return 0x0 if error.\r\n    }\r\n  }\r\n\r\ntion _nextTokenId() internal view virtual returns (uint256) {\r\n        return _currentIndex;\r\n    }\r\n\r\n\ntion balanceOf(address owner) \r\n        public \r\n        view \r\n        virtual \r\n        override \r\n        returns (uint) \r\n    {\r\n        require(owner != address(0), \"ERC721Psi: balance query for the zero address\");\r\n\r\n        uint count;\r\n        for( uint i = _startTokenId(); i < _nextTokenId(); ++i ){\r\n            if(_exists(i)){\r\n                if( owner == ownerOf(i)){\r\n                    ++count;\r\n                }\r\n            }\r\n        }\r\n        return count;\r\n    }\r\n\r\n",
+    "rewritten_code": {
+      "walletOfOwner": "function walletOfOwner(address _address) external view returns (uint256[] memory) {\r\n    uint256 ownerTokenCount = balanceOf(_address);\r\n    uint256[] memory tokenIds = new uint256[](ownerTokenCount);\r\n    uint256 tokenindex = 0;\r\n    for (uint256 i = _startTokenId(); i < _nextTokenId(); i++) {\r\n      if(_address == this.tryOwnerOf(i)) tokenIds[tokenindex++] = i;\r\n    }\r\n    return tokenIds;\r\n  }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Arbitrum_ParentMessenger",
+    "function": "constructor",
+    "explanation": "Constructor comment specifies Optimism contract but implements Arbitrum base contracts",
+    "contract_code": "\n=== Implementation of Function constructor(address,uint256) ===\nnstructor(address _inbox, uint256 _childChainId)\n        Arbitrum_CrossDomainEnabled(_inbox)\n        ParentMessengerBase(_childChainId)\n    {\n        refundL2Address = owner();\n    }\n\n\n    \n=== Functions that function constructor internally calls ===\nconstructor(address _inbox) {\n        inbox = iArbitrum_Inbox(_inbox);\n    }\nconstructor(uint256 _childChainId) {\n        childChainId = _childChainId;\n    }\nfunction owner() public view virtual returns (address) {\n        return _owner;\n    }",
+    "rewritten_code": {
+      "constructor": "constructor(address _inbox, uint256 _childChainId)\n        Arbitrum_CrossDomainEnabled(_inbox)\n        ParentMessengerBase(_childChainId)\n    {\n        refundL2Address = owner();\n    }"
+    }
+  }
+]

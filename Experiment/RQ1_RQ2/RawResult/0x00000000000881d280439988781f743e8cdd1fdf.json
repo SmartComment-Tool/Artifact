@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "LancetPasscard",
+    "function": "setApprovalForAll",
+    "explanation": "Missing check that operator cannot be the caller as per comment requirements.",
+    "contract_code": "\n=== Implementation of Function setApprovalForAll(address,bool) ===\nfunction setApprovalForAll(address operator, bool approved)\r\n        public\r\n        override (IERC721A, ERC721A)\r\n        onlyAllowedOperatorApproval(operator)\r\n    {\r\n        super.setApprovalForAll(operator, approved);\r\n    }\n    \n=== Functions that function setApprovalForAll internally calls ===\nfunction setApprovalForAll(address operator, bool approved) public virtual override {\n        _operatorApprovals[_msgSenderERC721A()][operator] = approved;\n        emit ApprovalForAll(_msgSenderERC721A(), operator, approved);\n    }\nmodifier onlyAllowedOperatorApproval(address operator) virtual {\n        if (!_isPriorityOperator(operator)) {\n            if (_operatorFilteringEnabled()) _revertIfBlocked(operator);\n        }\n        _;\n    }",
+    "rewritten_code": {
+      "setApprovalForAll(address,bool)": "function setApprovalForAll(address operator, bool approved) public override (IERC721A, ERC721A) onlyAllowedOperatorApproval(operator) {\n        require(operator != msg.sender, \"Operator cannot be caller\");\n        super.setApprovalForAll(operator, approved);\n    }"
+    }
+  }
+]

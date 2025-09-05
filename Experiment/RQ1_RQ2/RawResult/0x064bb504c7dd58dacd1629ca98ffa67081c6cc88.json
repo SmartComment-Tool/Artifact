@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "CoinToken",
+    "function": "constructor",
+    "explanation": "Comment specifies service.transfer but implementation uses low-level call",
+    "contract_code": "\n=== Implementation of Function constructor(string,string,uint256,uint256,uint256,uint256,address,address,address) ===\nconstructor(string memory _name, string memory _symbol, uint256 _decimals, uint256 _supply, uint256 _txFee,uint256 _burnFee,address _FeeAddress,address tokenOwner,address service) public payable {\r\n        name = _name;\r\n        symbol = _symbol;\r\n        decimals = _decimals;\r\n        totalSupply = _supply * 10**_decimals;\r\n        balances[tokenOwner] = totalSupply;\r\n        owner = tokenOwner;\r\n        txFee = _txFee;\r\n        burnFee = _burnFee;\r\n        FeeAddress = _FeeAddress;\r\n        (bool success) = service.call.value(msg.value)();\r\n        require(success, \"Transfer failed.\");\r\n        emit Transfer(address(0), tokenOwner, totalSupply);\r\n    }\n    ",
+    "rewritten_code": {
+      "constructor": "constructor(string memory _name, string memory _symbol, uint256 _decimals, uint256 _supply, uint256 _txFee,uint256 _burnFee,address _FeeAddress,address tokenOwner,address service) public payable {\n        name = _name;\n        symbol = _symbol;\n        decimals = _decimals;\n        totalSupply = _supply * 10**_decimals;\n        balances[tokenOwner] = totalSupply;\n        owner = tokenOwner;\n        txFee = _txFee;\n        burnFee = _burnFee;\n        FeeAddress = _FeeAddress;\n        service.transfer(msg.value);\n        emit Transfer(address(0), tokenOwner, totalSupply);\n    }"
+    }
+  }
+]

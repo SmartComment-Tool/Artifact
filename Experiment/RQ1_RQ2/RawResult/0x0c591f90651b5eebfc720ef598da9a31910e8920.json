@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "AccessControl",
+    "function": "transferAdmin",
+    "explanation": "Function uses owner access control instead of admin as specified",
+    "contract_code": "\n=== Implementation of Function transferAdmin(address) ===\nfunction transferAdmin(address newAdmin) external virtual onlyOwner {\n        require(newAdmin != address(0), \"Invalid Admin: new admin is the zero address\");\n        address oldAdmin = admin();\n        _setAdmin(newAdmin);\n\n        emit TransferAdmin(oldAdmin, newAdmin);\n    }\n    \n=== Functions that function transferAdmin internally calls ===\nfunction _setAdmin(address newAdmin) private {\n        address oldAdmin = _admin;\n        _admin = newAdmin;\n        emit AdminTransferred(oldAdmin, newAdmin);\n    }\nfunction admin() public view virtual returns (address) {\n        return _admin;\n    }\nmodifier onlyOwner() {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n        _;\n    }",
+    "rewritten_code": {
+      "transferAdmin(address)": "function transferAdmin(address newAdmin) external virtual {\n        require(msg.sender == admin(), \"Access denied\");\n        require(newAdmin != address(0), \"Invalid Admin: new admin is the zero address\");\n        address oldAdmin = admin();\n        _setAdmin(newAdmin);\n        emit TransferAdmin(oldAdmin, newAdmin);\n    }"
+    }
+  }
+]

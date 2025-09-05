@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC20",
+    "function": "approveMultiple",
+    "explanation": "Missing check for empty spenders array",
+    "contract_code": "\n=== Implementation of Function approveMultiple(address[],uint256) ===\nfunction approveMultiple(address [] calldata spenders, uint256 amount) external returns (bool) {\n        address owner = _msgSender();\n        for (uint256 i = 0; i < spenders.length; i++) {\n            _allowances[owner][spenders[i]] = amount;\n        }\n        return true;\n    }\n    \n=== Functions that function approveMultiple internally calls ===\nfunction _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }",
+    "rewritten_code": {
+      "approveMultiple": "function approveMultiple(address [] calldata spenders, uint256 amount) external returns (bool) {\n        require(spenders.length > 0, \"ERC20: empty spenders array\");\n        address owner = _msgSender();\n        for (uint256 i = 0; i < spenders.length; i++) {\n            _allowances[owner][spenders[i]] = amount;\n        }\n        return true;\n    }"
+    }
+  }
+]

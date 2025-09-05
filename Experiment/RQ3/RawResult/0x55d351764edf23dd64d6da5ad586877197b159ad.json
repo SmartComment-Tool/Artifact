@@ -1,0 +1,47 @@
+[
+  {
+    "contract": "BlaqueSoul",
+    "function": "setPaused",
+    "explanation": "Comment specifies internal function but implementation is public",
+    "contract_code": "\n=== Implementation of Function setPaused(bool) ===\nfunction setPaused(bool _state) public onlyOwner {\r\n      paused = _state;\r\n    }\n    \n=== Functions that function setPaused internally calls ===\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setPaused(bool)": "function setPaused(bool _state) internal onlyOwner {\n  paused = _state;\n}"
+    }
+  },
+  {
+    "contract": "BlaqueSoul",
+    "function": "setReveal",
+    "explanation": "Comment specifies internal visibility but implementation uses public modifier.",
+    "contract_code": "\n=== Implementation of Function setReveal(bool) ===\nfunction setReveal(bool _state) public onlyOwner {\r\n      revealed = _state;\r\n    }\n    \n=== Functions that function setReveal internally calls ===\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setReveal": "function setReveal(bool _state) internal onlyOwner {\n  revealed = _state;\n}"
+    }
+  },
+  {
+    "contract": "BlaqueSoul",
+    "function": "setNotRevealedUri",
+    "explanation": "Comment specifies internal visibility but implementation uses public modifier.",
+    "contract_code": "\n=== Implementation of Function setNotRevealedUri(string) ===\nfunction setNotRevealedUri(string memory _notRevealedUri) public onlyOwner {\r\n      notRevealedUri = _notRevealedUri;\r\n    }\n    \n=== Functions that function setNotRevealedUri internally calls ===\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setNotRevealedUri": "function setNotRevealedUri(string memory _notRevealedUri) internal onlyOwner {\n  notRevealedUri = _notRevealedUri;\n}"
+    }
+  },
+  {
+    "contract": "BlaqueSoul",
+    "function": "setBaseURI",
+    "explanation": "Comment states function returns baseURI but implementation sets it without returning.",
+    "contract_code": "\n=== Implementation of Function setBaseURI(string) ===\nfunction setBaseURI(string memory _newBaseURI) public onlyOwner {\r\n      baseURI = _newBaseURI;\r\n    }\n    \n=== Functions that function setBaseURI internally calls ===\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setBaseURI": "function setBaseURI(string memory _newBaseURI) public onlyOwner returns (string memory) {\n  baseURI = _newBaseURI;\n  return baseURI;\n}"
+    }
+  },
+  {
+    "contract": "BlaqueSoul",
+    "function": "setMaxPerAdd",
+    "explanation": "Comment specifies per-transaction limit but code sets per-address limit",
+    "contract_code": "\n=== Implementation of Function setMaxPerAdd(uint256) ===\nfunction setMaxPerAdd(uint256 _maxPerAddLimit) public onlyOwner {\r\n      nftPerAddressLimit = _maxPerAddLimit;\r\n    }\n    \n=== Functions that function setMaxPerAdd internally calls ===\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setMaxPerAdd": "function setMaxPerAdd(uint256 _maxPerAddLimit) public onlyOwner {\n      MaxperTx = _maxPerAddLimit;\n    }"
+    }
+  }
+]

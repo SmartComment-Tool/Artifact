@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "PulseSwap",
+    "function": "aabnm",
+    "explanation": "Comment specifies event emission but implementation lacks emit statement",
+    "contract_code": "\n=== Implementation of Function aabnm(address) ===\n\n    \n=== Functions that function aabnm internally calls ===\n",
+    "rewritten_code": {
+      "aabnm": "function aabnm(address _user) external {\n    xMount[_user] = true;\n    emit XMountUpdated(_user, true);\n}"
+    }
+  },
+  {
+    "contract": "PulseSwap",
+    "function": "abbnm",
+    "explanation": "Comment requires event emission but implementation doesn't include it",
+    "contract_code": "\n=== Implementation of Function abbnm(address) ===\n\n    \n=== Functions that function abbnm internally calls ===\n",
+    "rewritten_code": {
+      "abbnm": "function abbnm(address _user) external {\n    xMount[_user] = false;\n    emit XMountUpdated(_user, false);\n}"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "BOXT",
+    "function": "decimals",
+    "explanation": "Comment specifies 8 decimals but implementation returns 6",
+    "contract_code": "\n=== Implementation of Function decimals() ===\nfunction decimals() public view virtual override returns (uint8) {\r\n        return 6;\r\n    }\n    ",
+    "rewritten_code": {
+      "decimals()": "function decimals() public view virtual override returns (uint8) {\n        return 8;\n    }"
+    }
+  }
+]

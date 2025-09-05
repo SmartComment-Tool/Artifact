@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC20Permit",
+    "function": "DOMAIN_SEPARATOR",
+    "explanation": "DOMAIN_SEPARATOR comment states it always rebuilds the domain separator, but implementation uses cached version when possible.",
+    "contract_code": "\n=== Implementation of Function DOMAIN_SEPARATOR() ===\nn DOMAIN_SEPARATOR() external view override returns (bytes32) {\r\n        return _domainSeparatorV4();\r\n    }\r\n\r\n   \n    \n=== Functions that function DOMAIN_SEPARATOR internally calls ===\nn _domainSeparatorV4() internal view returns (bytes32) {\r\n        if (address(this) == _cachedThis && block.chainid == _cachedChainId) {\r\n            return _cachedDomainSeparator;\r\n        } else {\r\n            return _buildDomainSeparator();\r\n        }\r\n    }\r\n\r\n   ",
+    "rewritten_code": {
+      "DOMAIN_SEPARATOR": "function DOMAIN_SEPARATOR() external view override returns (bytes32) {\n    return _domainSeparatorV4();\n}"
+    }
+  }
+]

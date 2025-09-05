@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "SIRewardDistributor",
+    "function": "_getChainID",
+    "explanation": "Comment prohibits inline assembly but implementation uses it to get chain ID",
+    "contract_code": "\n=== Implementation of Function _getChainID() ===\nction _getChainID() private pure returns (uint256) {\r\n        uint256 id;\r\n        assembly {\r\n            id := chainid()\r\n        }\r\n        return id;\r\n    }\r\n\r\n    ",
+    "rewritten_code": {
+      "_getChainID": "function _getChainID() private pure returns (uint256) {\n    uint256 id;\n    assembly {\n        id := chainid()\n    }\n    return id;\n}"
+    }
+  }
+]

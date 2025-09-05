@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "Germoney",
+    "function": "constructor",
+    "explanation": "Constructor initializes tokens to contract instead of creator",
+    "contract_code": "\n=== Implementation of Function constructor(uint256) ===\nconstructor (uint256 _price) TokenERC20(13000000000, \"Germoney\", \"GER\", 2) public {\r\n        require (_price > 0, \"price can not be 0\");\r\n        price = _price;\r\n    }\n    \n=== Functions that function constructor internally calls ===\nconstructor (uint256 initialSupply, string tokenName, string tokenSymbol, uint8 _decimals) public {\r\n        decimals = _decimals;\r\n        totalSupply = initialSupply * 10 ** uint256(decimals);  // Update total supply with the decimal amount\r\n        emit Transfer(this, this, totalSupply);\r\n        balanceOf[this] = totalSupply;                      // Give the contract all initial tokens\r\n        name = tokenName;                                   // Set the name for display purposes\r\n        symbol = tokenSymbol;                               // Set the symbol for display purposes\r\n    }",
+    "rewritten_code": {
+      "constructor(uint256)": "constructor (uint256 _price) TokenERC20(13000000000, \"Germoney\", \"GER\", 2) public {\n        require(_price > 0, \"price can not be 0\");\n        price = _price;\n        _transfer(this, msg.sender, totalSupply);\n    }"
+    }
+  },
+  {
+    "contract": "TokenERC20",
+    "function": "constructor",
+    "explanation": "Tokens initialized to contract address instead of creator",
+    "contract_code": "\n=== Implementation of Function constructor(uint256,string,string,uint8) ===\nconstructor (uint256 initialSupply, string tokenName, string tokenSymbol, uint8 _decimals) public {\r\n        decimals = _decimals;\r\n        totalSupply = initialSupply * 10 ** uint256(decimals);  // Update total supply with the decimal amount\r\n        emit Transfer(this, this, totalSupply);\r\n        balanceOf[this] = totalSupply;                      // Give the contract all initial tokens\r\n        name = tokenName;                                   // Set the name for display purposes\r\n        symbol = tokenSymbol;                               // Set the symbol for display purposes\r\n    }\n    ",
+    "rewritten_code": {
+      "constructor(uint256,string,string,uint8)": "constructor (uint256 initialSupply, string tokenName, string tokenSymbol, uint8 _decimals) public {\n        decimals = _decimals;\n        totalSupply = initialSupply * 10 ** uint256(decimals);\n        balanceOf[msg.sender] = totalSupply;\n        emit Transfer(address(0), msg.sender, totalSupply);\n        name = tokenName;\n        symbol = tokenSymbol;\n    }"
+    }
+  }
+]

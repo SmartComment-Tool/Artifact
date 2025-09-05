@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "TheHuonixFoundation",
+    "function": "buy",
+    "explanation": "Contract balance not updated before transfer; insufficient funds for token purchase",
+    "contract_code": "\n=== Implementation of Function buy() ===\nfunction buy() payable public {\r\n        uint amount = msg.value / buyPrice;               // calculates the amount\r\n        _transfer(this, msg.sender, amount);              // makes the transfers\r\n    }\n    \n=== Functions that function buy internally calls ===\nfunction _transfer(address _from, address _to, uint _value) internal {\r\n        require (_to != 0x0);                               // Prevent transfer to 0x0 address. Use burn() instead\r\n        require (balanceOf[_from] >= _value);               // Check if the sender has enough\r\n        require (balanceOf[_to] + _value >= balanceOf[_to]); // Check for overflows\r\n        require(!frozenAccount[_from]);                     // Check if sender is frozen\r\n        require(!frozenAccount[_to]);                       // Check if recipient is frozen\r\n        balanceOf[_from] -= _value;                         // Subtract from the sender\r\n        balanceOf[_to] += _value;                           // Add the same to the recipient\r\n        emit Transfer(_from, _to, _value);\r\n    }",
+    "rewritten_code": {
+      "buy": "function buy() payable public {\n        uint amount = msg.value / buyPrice;\n        balanceOf[address(this)] += amount; // Add tokens to contract balance\n        _transfer(address(this), msg.sender, amount);\n    }"
+    }
+  },
+  {
+    "contract": "TheHuonixFoundation",
+    "function": "mintToken",
+    "explanation": "Minted tokens should be directly created in target's account, but implementation uses intermediate contract address",
+    "contract_code": "\n=== Implementation of Function mintToken(address,uint256) ===\nfunction mintToken(address target, uint256 mintedAmount) onlyOwner public {\r\n        balanceOf[target] += mintedAmount;\r\n        totalSupply += mintedAmount;\r\n        emit Transfer(0, this, mintedAmount);\r\n        emit Transfer(this, target, mintedAmount);\r\n    }\n    \n=== Functions that function mintToken internally calls ===\nmodifier onlyOwner {\r\n        require(msg.sender == owner);\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "mintToken": "function mintToken(address target, uint256 mintedAmount) onlyOwner public {\n        balanceOf[target] += mintedAmount;\n        totalSupply += mintedAmount;\n        emit Transfer(address(0), target, mintedAmount);\n    }"
+    }
+  }
+]

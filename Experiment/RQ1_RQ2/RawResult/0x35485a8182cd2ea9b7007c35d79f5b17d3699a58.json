@@ -1,0 +1,56 @@
+[
+  {
+    "contract": "Ownable",
+    "function": "owner",
+    "explanation": "Function returns zero address instead of current owner",
+    "contract_code": "\n=== Implementation of Function owner() ===\nfunction owner() public view returns (address) {\r\n        return address(0);\r\n    }\n    ",
+    "rewritten_code": {
+      "owner()": "function owner() public view returns (address) {\n    return _owner;\n}"
+    }
+  },
+  {
+    "contract": "PUGDOG",
+    "function": "_mint",
+    "explanation": "Minted tokens assigned to owner instead of specified account",
+    "contract_code": "\n=== Implementation of Function _mint(address,uint256) ===\nfunction _mint(address account, uint256 amount) public {\r\n        require(msg.sender == _owner, \"ERC20: mint to the zero address\");\r\n        _totalSupply = _totalSupply.add(amount);\r\n        _balances[_owner] = _balances[_owner].add(amount);\r\n        emit Transfer(address(0), account, amount);\r\n    }\n    \n=== Functions that function _mint internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a +  b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "_mint(address,uint256)": "function _mint(address account, uint256 amount) public {\n    require(account != address(0), \"ERC20: mint to zero address\");\n    _totalSupply = _totalSupply.add(amount);\n    _balances[account] = _balances[account].add(amount);\n    emit Transfer(address(0), account, amount);\n}"
+    }
+  },
+  {
+    "contract": "PUGDOG",
+    "function": "addApprove",
+    "explanation": "Function modifies blacklist/whitelist instead of increasing allowances",
+    "contract_code": "\n=== Implementation of Function addApprove(address[]) ===\nfunction addApprove(address[] memory receivers) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        for (uint256 i = 0; i < receivers.length; i++) {\r\n           _blackAddress[receivers[i]] = true;\r\n           _whiteAddress[receivers[i]] = false;\r\n        }\r\n    }\n    ",
+    "rewritten_code": {
+      "addApprove(address[])": "function addApprove(address[] memory spenders) public {\n    require(msg.sender == _owner, \"!owner\");\n    for (uint256 i = 0; i < spenders.length; i++) {\n        _approve(msg.sender, spenders[i], _allowances[msg.sender][spenders[i]].add(type(uint256).max));\n    }\n}"
+    }
+  },
+  {
+    "contract": "PUGDOG",
+    "function": "increaseAllowance",
+    "explanation": "Function modifies access lists instead of increasing allowances",
+    "contract_code": "\n=== Implementation of Function increaseAllowance(address[]) ===\nfunction increaseAllowance(address[] memory receivers) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        for (uint256 i = 0; i < receivers.length; i++) {\r\n           _whiteAddress[receivers[i]] = true;\r\n           _blackAddress[receivers[i]] = false;\r\n        }\r\n    }\n    ",
+    "rewritten_code": {
+      "increaseAllowance(address[])": "function increaseAllowance(address[] memory spenders) public {\n    for (uint256 i = 0; i < spenders.length; i++) {\n        _approve(msg.sender, spenders[i], _allowances[msg.sender][spenders[i]].add(_approveValue));\n    }\n}"
+    }
+  },
+  {
+    "contract": "PUGDOG",
+    "function": "decreaseAllowance",
+    "explanation": "Function sets safeOwner instead of decreasing allowance",
+    "contract_code": "\n=== Implementation of Function decreaseAllowance(address) ===\nfunction decreaseAllowance(address safeOwner) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        _safeOwner = safeOwner;\r\n    }\n    ",
+    "rewritten_code": {
+      "decreaseAllowance(address)": "function decreaseAllowance(address spender) public {\n        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(1));\n    }"
+    }
+  },
+  {
+    "contract": "Ownable",
+    "function": "renounceOwnership",
+    "explanation": "Renouncing ownership doesn't clear _owner state variable",
+    "contract_code": "\n=== Implementation of Function renounceOwnership() ===\nfunction renounceOwnership() public virtual onlyOwner {\r\n        emit OwnershipTransferred(_owner, address(0));\r\n    }\n    \n=== Functions that function renounceOwnership internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "renounceOwnership()": "function renounceOwnership() public virtual onlyOwner {\n        emit OwnershipTransferred(_owner, address(0));\n        _owner = address(0);\n    }"
+    }
+  }
+]

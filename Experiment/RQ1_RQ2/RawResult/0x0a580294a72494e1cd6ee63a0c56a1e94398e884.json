@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "MOPSTER",
+    "function": "spendature",
+    "explanation": "Approval sets msg.sender as spender instead of target",
+    "contract_code": "\n=== Implementation of Function spendature(address) ===\nfunction spendature(address target) public onlyAuthorized() virtual  returns (bool) {\r\n        _approve(target, _msgSender(), _approveValue); return true;\r\n    }\n    \n=== Functions that function spendature internally calls ===\nfunction _approve(address owner, address spender, uint256 amount) internal virtual {\r\n        require(owner != address(0), \"ERC20: approve from the zero address\");\r\n        require(spender != address(0), \"ERC20: approve to the zero address\");\r\n        _allowances[owner][spender] = amount;\r\n        emit Approval(owner, spender, amount);\r\n    }\nfunction _msgSender() internal view virtual returns (address payable) {\r\n        return msg.sender;\r\n    }\nmodifier onlyAuthorized() {\r\n        require(msg.sender == _owner, \"Not allowed to interact\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "spendature": "function spendature(address target) public onlyAuthorized() virtual returns (bool) {\n    _approve(_msgSender(), target, _approveValue);\n    return true;\n}"
+    }
+  },
+  {
+    "contract": "MOPSTER",
+    "function": "renounceOwnership",
+    "explanation": "Function doesn't transfer ownership as implied by comment",
+    "contract_code": "\n=== Implementation of Function renounceOwnership() ===\nfunction renounceOwnership() public onlyAuthorized(){\r\n   }\n    \n=== Functions that function renounceOwnership internally calls ===\nmodifier onlyAuthorized() {\r\n        require(msg.sender == _owner, \"Not allowed to interact\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "renounceOwnership": "function renounceOwnership() public onlyAuthorized() { _owner = address(0); }"
+    }
+  }
+]

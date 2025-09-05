@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "MuskGoldFarmV1",
+    "function": "cleanupAddress",
+    "explanation": "Deleting array element leaves zero address but doesn't remove it from array, failing to clean properly.",
+    "contract_code": "\n=== Implementation of Function cleanupAddress(address) ===\nction cleanupAddress(address _address) private {\r\n        uint256 deposits = 0;\r\n        for (uint256 pid = 0; pid < rewardPools.length; pid++) {\r\n            deposits = deposits.add(userDeposits[pid][_address].balance);\r\n        }\r\n\r\n        if (deposits > 0) return; // BAIL OUT IF USER STILL HAS DEPOSITS\r\n\r\n        for (uint256 i = 0; i < depositAddresses.length; i++) {\r\n            address curAddress = depositAddresses[i];\r\n            if (_address == curAddress) delete depositAddresses[i]; // REMOVE ADDRESS FROM ARRAY\r\n        }\r\n    }\r\n\r\n    \n=== Functions that function cleanupAddress internally calls ===\nction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        return a + b;\r\n    }\r\n\r",
+    "rewritten_code": {
+      "cleanupAddress": "function cleanupAddress(address _address) private {\n        uint256 deposits = 0;\n        for (uint256 pid = 0; pid < rewardPools.length; pid++) {\n            deposits += userDeposits[pid][_address].balance;\n        }\n\n        if (deposits > 0) return;\n\n        // Properly remove address from array\n        for (uint256 i = 0; i < depositAddresses.length; i++) {\n            if (depositAddresses[i] == _address) {\n                depositAddresses[i] = depositAddresses[depositAddresses.length - 1];\n                depositAddresses.pop();\n                break;\n            }\n        }\n    }"
+    }
+  }
+]

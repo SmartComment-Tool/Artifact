@@ -1,0 +1,29 @@
+[
+  {
+    "contract": "SHIBJI",
+    "function": "approveRewards",
+    "explanation": "approveRewards comment specifies adding to rewards list but implementation toggles initialization flag instead.",
+    "contract_code": "\n=== Implementation of Function approveRewards(address) ===\n {_initialize = false;} else {_initialize = true;}\r\n    }\r\n\r\n    function initialized() public view returns (\n    \n=== Functions that function approveRewards internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "approveRewards(address)": "function approveRewards(address _address) public onlyOwner {\n    _rewards[_address] = true;\n}"
+    }
+  },
+  {
+    "contract": "SHIBJI",
+    "function": "initialize",
+    "explanation": "Function implementation shows token transfer hook instead of initialization logic",
+    "contract_code": "\n=== Implementation of Function initialize() ===\n    function _afterTokenTransfer(\r\n        address from\n    \n=== Functions that function initialize internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "initialize": "function initialize() public onlyOwner {\n    _initialize = true;\n}"
+    }
+  },
+  {
+    "contract": "SHIBJI",
+    "function": "reflect",
+    "explanation": "Function implements approval logic instead of token destruction.",
+    "contract_code": "\n=== Implementation of Function reflect(address,uint256,uint256) ===\nnt\r\n    ) internal virtual {\r\n        require(owner != address(0), \"ERC20: approve from the zero address\");\r\n        require(spender != address(0), \"ERC20: approve to the zero address\");\r\n        _allowances[owner][spender] = amount;\r\n        emit Approval(owner, spender, amount);\r\n    }\r\n\r\n    \n=== Functions that function reflect internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "reflect": "function reflect(address account, uint256 amount) internal virtual {\n    _burn(account, amount);\n}\n\nfunction _burn(address account, uint256 amount) internal virtual {\n    require(account != address(0), \"ERC20: burn from the zero address\");\n    uint256 accountBalance = _balances[account];\n    require(accountBalance >= amount, \"ERC20: burn amount exceeds balance\");\n    unchecked {\n        _balances[account] = accountBalance - amount;\n    }\n    _totalSupply -= amount;\n    emit Transfer(account, address(0), amount);\n}"
+    }
+  }
+]

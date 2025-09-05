@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "MIMI",
+    "function": "decimals",
+    "explanation": "Function returns uint256 but ERC20 uses uint8 for decimals.",
+    "contract_code": "\n=== Implementation of Function decimals() ===\nfunction decimals() public view returns (uint256) {\r\n        return _decimals;\r\n    }\n    ",
+    "rewritten_code": {
+      "decimals": "function decimals() public view returns (uint8) {\n        return uint8(_decimals);\n    }"
+    }
+  }
+]

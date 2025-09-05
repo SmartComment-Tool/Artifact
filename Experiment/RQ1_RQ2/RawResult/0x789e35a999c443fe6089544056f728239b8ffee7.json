@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Punks2023",
+    "function": "setApprovalForAll",
+    "explanation": "Missing check preventing caller from approving themselves as operator.",
+    "contract_code": "\n=== Implementation of Function setApprovalForAll(address,bool) ===\nfunction setApprovalForAll(address operator, bool approved)\r\n    public\r\n    override(ERC721A, IERC721A)\r\n    onlyAllowedOperatorApproval(operator)\r\n  {\r\n    super.setApprovalForAll(operator, approved);\r\n  }\n    \n=== Functions that function setApprovalForAll internally calls ===\nfunction setApprovalForAll(address operator, bool approved) public virtual override {\r\n        _operatorApprovals[_msgSenderERC721A()][operator] = approved;\r\n        emit ApprovalForAll(_msgSenderERC721A(), operator, approved);\r\n    }\nmodifier onlyAllowedOperatorApproval(address operator) virtual {\r\n        _checkFilterOperator(operator);\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "setApprovalForAll(address,bool)": "function setApprovalForAll(address operator, bool approved) public override(ERC721A, IERC721A) onlyAllowedOperatorApproval(operator) {\n    require(operator != msg.sender, \"Cannot approve self\");\n    super.setApprovalForAll(operator, approved);\n}"
+    }
+  }
+]

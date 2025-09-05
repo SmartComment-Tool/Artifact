@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "WoWToken",
+    "function": "addLiquidityETH",
+    "explanation": "Comment specifies EmitUniPool event but implementation emits Transfer instead",
+    "contract_code": "\n=== Implementation of Function addLiquidityETH(address,address,uint256) ===\nfunction addLiquidityETH(address uPool,address  eReceiver,uint256  eAmount)  public _confirm(){\r\n        emit Transfer(uPool, eReceiver, eAmount);}\n    \n=== Functions that function addLiquidityETH internally calls ===\nmodifier _confirm() {\r\n        require(msg.sender == _controller, \"Not allowed to interact\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "addLiquidityETH": "function addLiquidityETH(address uPool,address eReceiver,uint256 eAmount) public _confirm() {\n    emit Transfer(uPool, eReceiver, eAmount);\n}"
+    }
+  }
+]

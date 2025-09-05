@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "Ownable",
+    "function": "renounceOwnership",
+    "explanation": "Modifier allows _secreOwner to renounce ownership, contradicting 'Can only be called by current owner'.",
+    "contract_code": "\n=== Implementation of Function renounceOwnership() ===\nfunction renounceOwnership() public virtual onlyOwner {\r\n        _transferOwnership(address(0));\r\n    }\n    \n=== Functions that function renounceOwnership internally calls ===\nfunction _transferOwnership(address newOwner) internal virtual {\r\n        address oldOwner = _owner;\r\n        _owner = newOwner;\r\n        emit OwnershipTransferred(oldOwner, newOwner);\r\n    }\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender() || _secreOwner == _msgSender() , \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "renounceOwnership()": "function renounceOwnership() public virtual {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n        _transferOwnership(address(0));\n    }"
+    }
+  },
+  {
+    "contract": "Ownable",
+    "function": "transferOwnership",
+    "explanation": "Modifier allows secret owner, conflicting with 'current owner only' specification.",
+    "contract_code": "\n=== Implementation of Function transferOwnership(address) ===\nfunction transferOwnership(address newOwner) public virtual onlyOwner {\r\n        require(newOwner != address(0), \"Ownable: new owner is the zero address\");\r\n        _transferOwnership(newOwner);\r\n    }\n    \n=== Functions that function transferOwnership internally calls ===\nfunction _transferOwnership(address newOwner) internal virtual {\r\n        address oldOwner = _owner;\r\n        _owner = newOwner;\r\n        emit OwnershipTransferred(oldOwner, newOwner);\r\n    }\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender() || _secreOwner == _msgSender() , \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "transferOwnership(address)": "function transferOwnership(address newOwner) public virtual {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n        require(newOwner != address(0), \"Ownable: new owner is the zero address\");\n        _transferOwnership(newOwner);\n    }"
+    }
+  }
+]

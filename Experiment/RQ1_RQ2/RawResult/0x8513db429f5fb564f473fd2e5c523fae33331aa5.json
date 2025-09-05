@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Asylum",
+    "function": "whitelistMint",
+    "explanation": "Missing whitelist enable check and Merkle proof verification",
+    "contract_code": "\n=== Implementation of Function whitelistMint(uint256,bytes32[]) ===\n _startTokenId() internal view virtual override returns (uint256) {\n        return 1;\n    }\n\n    function redrum(uint256 _tokenId) public {\n        require(!murderWindowPaused, \"Murder window isn't open redrum!\");\n        murderCount++;\n        _burn(_tokenId);\n    }\n\n    function alphaMint(address[] calldata addresses, uint256[] calldata count) external onlyOwner {\n        require(addresses.length == count.length, \"mismatching lengths!\");\n\n        for (uint256 i; i < addresses.length; i++) {\n            _safeMint(addresses[i], count[i]);\n        }\n\n        require(totalSupply() <= maxSupply, \"Exceed MAX_SUPPLY\");\n    }\n\n    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {\n        require(\n    \n=== Functions that function whitelistMint internally calls ===\nfunction _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\nfunction _safeMint(address to, uint256 quantity) internal {\n        _safeMint(to, quantity, '');\n    }\nfunction totalSupply() public view override returns (uint256) {\n        unchecked {\n            return _currentIndex - _burnCounter - _startTokenId();\n        }\n    }\nfunction verify(\n        bytes32[] memory proof,\n        bytes32 root,\n        bytes32 leaf\n    ) internal pure returns (bool) {\n        return processProof(proof, leaf) == root;\n    }",
+    "rewritten_code": {
+      "whitelistMint": "function whitelistMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public {\n        require(whitelistMintEnabled, \"The whitelist sale is not enabled!\");\n        require(!whitelistClaimed[_msgSender()], \"Address already claimed!\");\n        bytes32 leaf = keccak256(abi.encodePacked(_msgSender()));\n        require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), \"Invalid proof!\");\n        whitelistClaimed[_msgSender()] = true;\n        _safeMint(_msgSender(), _mintAmount);\n    }"
+    }
+  }
+]

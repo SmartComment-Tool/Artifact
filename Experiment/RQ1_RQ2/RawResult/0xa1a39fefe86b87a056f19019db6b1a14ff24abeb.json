@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "StandardToken",
+    "function": "approve",
+    "explanation": "Implementation doesn't mitigate allowance race condition via zero-first approach",
+    "contract_code": "\n=== Implementation of Function approve(address,uint256) ===\nfunction approve(address _spender, uint256 _value) public returns (bool) {\r\n    allowed[msg.sender][_spender] = _value;\r\n    Approval(msg.sender, _spender, _value);\r\n    return true;\r\n  }\n    ",
+    "rewritten_code": {
+      "approve": "function approve(address _spender, uint256 _value) public returns (bool) {\n    require(_value == 0 || allowed[msg.sender][_spender] == 0);\n    allowed[msg.sender][_spender] = _value;\n    Approval(msg.sender, _spender, _value);\n    return true;\n}"
+    }
+  },
+  {
+    "contract": "StandardToken",
+    "function": "increaseApproval",
+    "explanation": "Function allows increasing approval when current allowance is zero, contradicting comment requiring approve() in this case",
+    "contract_code": "\n=== Implementation of Function increaseApproval(address,uint256) ===\nfunction increaseApproval(address _spender, uint _addedValue) public returns (bool) {\r\n    allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);\r\n    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\r\n    return true;\r\n  }\n    \n=== Functions that function increaseApproval internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n    uint256 c = a + b;\r\n    assert(c >= a);\r\n    return c;\r\n  }",
+    "rewritten_code": {
+      "increaseApproval": "function increaseApproval(address _spender, uint _addedValue) public returns (bool) {\n    require(allowed[msg.sender][_spender] > 0);\n    allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);\n    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\n    return true;\n}"
+    }
+  }
+]

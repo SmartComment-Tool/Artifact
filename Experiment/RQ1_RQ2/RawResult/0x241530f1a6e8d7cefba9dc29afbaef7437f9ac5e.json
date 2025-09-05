@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "SafeMath",
+    "function": "add",
+    "explanation": "Function lacks overflow check; returns a+b without validation.",
+    "contract_code": "\n=== Implementation of Function add(uint256,uint256) ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\n        return a + b;\n    }\n    ",
+    "rewritten_code": {
+      "add(uint256,uint256)": "function add(uint256 a, uint256 b) internal pure returns (uint256) {\n        uint256 c = a + b;\n        require(c >= a, \"Addition overflow\");\n        return c;\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "GuardianManager",
+    "function": "cancelGuardianAddition",
+    "explanation": "Function allows authorized features in addition to owner, contradicting comment specifying only owner.",
+    "contract_code": "\n=== Implementation of Function cancelGuardianAddition(address,address) ===\nfunction cancelGuardianAddition(address _wallet, address _guardian) external onlyWalletOwnerOrFeature(_wallet) onlyWhenUnlocked(_wallet) {\n        bytes32 id = keccak256(abi.encodePacked(_wallet, _guardian, \"addition\"));\n        GuardianManagerConfig storage config = configs[_wallet];\n        require(config.pending[id] > 0, \"GM: no pending addition as guardian for target\");\n        delete config.pending[id];\n        emit GuardianAdditionCancelled(_wallet, _guardian);\n    }\n    \n=== Functions that function cancelGuardianAddition internally calls ===\nmodifier onlyWalletOwnerOrFeature(address _wallet) {\n        verifyOwnerOrAuthorisedFeature(_wallet, msg.sender);\n        _;\n    }\nmodifier onlyWhenUnlocked(address _wallet) {\n        require(!lockStorage.isLocked(_wallet), \"BF: wallet locked\");\n        _;\n    }",
+    "rewritten_code": {
+      "cancelGuardianAddition": "function cancelGuardianAddition(address _wallet, address _guardian) external onlyWhenUnlocked(_wallet) {\n        require(isOwner(_wallet, msg.sender), \"GM: not owner\");\n        bytes32 id = keccak256(abi.encodePacked(_wallet, _guardian, \"addition\"));\n        GuardianManagerConfig storage config = configs[_wallet];\n        require(config.pending[id] > 0, \"GM: no pending addition as guardian for target\");\n        delete config.pending[id];\n        emit GuardianAdditionCancelled(_wallet, _guardian);\n    }"
+    }
+  }
+]

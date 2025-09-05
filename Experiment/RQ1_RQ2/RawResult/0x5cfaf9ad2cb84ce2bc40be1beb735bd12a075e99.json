@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "AbleDollarToken",
+    "function": "unfreezeAccount",
+    "explanation": "Comment specifies freezing address but implementation unfreezes it.",
+    "contract_code": "\n=== Implementation of Function unfreezeAccount(address) ===\nfunction unfreezeAccount(address _target) onlyOwner public {\r\n        require(_target != address(0));\r\n        frozenAccount[_target] = false;\r\n        emit UnFreeze(_target, false);\r\n    }\n    \n=== Functions that function unfreezeAccount internally calls ===\nmodifier onlyOwner() {\r\n         require(msg.sender == owner);\r\n         _;\r\n    }",
+    "rewritten_code": {
+      "unfreezeAccount": "function unfreezeAccount(address _target) onlyOwner public {\n        require(_target != address(0));\n        frozenAccount[_target] = true;\n        emit Freeze(_target, true);\n    }"
+    }
+  }
+]

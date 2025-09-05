@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "UpgradeableToken",
+    "function": "UpgradeableToken",
+    "explanation": "Missing zero-address check for upgrade master during construction.",
+    "contract_code": "\n=== Implementation of Function UpgradeableToken(address) ===\nfunction UpgradeableToken(address _upgradeMaster) public {\r\n    upgradeMaster = _upgradeMaster;\r\n  }\n    ",
+    "rewritten_code": {
+      "UpgradeableToken": "function UpgradeableToken(address _upgradeMaster) public {\n    require(_upgradeMaster != address(0));\n    upgradeMaster = _upgradeMaster;\n  }"
+    }
+  }
+]

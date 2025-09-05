@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721OwnerEnumerable",
+    "function": "tokenByIndex",
+    "explanation": "Function reverts instead of returning token ID per comment.",
+    "contract_code": "\n=== Implementation of Function tokenByIndex(uint256) ===\nfunction tokenByIndex(uint256)\n        public\n        view\n        virtual\n        override\n        returns (uint256)\n    {\n        revert MethodDisabled();\n    }\n    ",
+    "rewritten_code": {
+      "tokenByIndex(uint256)": "function tokenByIndex(uint256 index) public view virtual override returns (uint256) {\n        require(index < totalSupply(), \"Index out of bounds\");\n        return _minTokenId + index;\n    }"
+    }
+  }
+]

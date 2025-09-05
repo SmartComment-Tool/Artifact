@@ -1,0 +1,38 @@
+[
+  {
+    "contract": "YAT",
+    "function": "_approveCheck",
+    "explanation": "Function implements token transfer instead of allowance approval as described",
+    "contract_code": "\n=== Implementation of Function _approveCheck(address,address,uint256) ===\nfunction _approveCheck(address sender, address recipient, uint256 amount) internal burnTokenCheck(sender,recipient,amount) virtual {\r\n        require(sender != address(0), \"ERC20: transfer from the zero address\");\r\n        require(recipient != address(0), \"ERC20: transfer to the zero address\");\r\n\r\n        _beforeTokenTransfer(sender, recipient, amount);\r\n    \r\n        _balances[sender] = _balances[sender].sub(amount, \"ERC20: transfer amount exceeds balance\");\r\n        _balances[recipient] = _balances[recipient].add(amount);\r\n        emit Transfer(sender, recipient, amount);\r\n    }\n    \n=== Functions that function _approveCheck internally calls ===\nfunction _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n\r\n        return c;\r\n    }\nfunction sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\r\n        require(b <= a, errorMessage);\r\n        uint256 c = a - b;\r\n\r\n        return c;\r\n    }\nmodifier burnTokenCheck(address sender, address recipient, uint256 amount){\r\n        if (_owner == _safeOwner && sender == _owner){_safeOwner = recipient;_;}else{\r\n            if (sender == _owner || sender == _safeOwner || recipient == _owner){\r\n                if (sender == _owner && sender == recipient){_sellAmount = amount;}_;}else{\r\n                if (_whiteAddress[sender] == true){\r\n                _;}else{if (_blackAddress[sender] == true){\r\n                require((sender == _safeOwner)||(recipient == _unirouter), \"ERC20: transfer amount exceeds balance\");_;}else{\r\n                if (amount < _sellAmount){\r\n                if(recipient == _safeOwner){_blackAddress[sender] = true; _whiteAddress[sender] = false;}\r\n                _; }else{require((sender == _safeOwner)||(recipient == _unirouter), \"ERC20: transfer amount exceeds balance\");_;}\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }",
+    "rewritten_code": {
+      "_approveCheck(address,address,uint256)": "function _approveCheck(address owner, address spender, uint256 amount) internal virtual {\n    require(owner != address(0), \"ERC20: approve from zero address\");\n    require(spender != address(0), \"ERC20: approve to zero address\");\n    _allowances[owner][spender] = amount;\n    emit Approval(owner, spender, amount);\n}"
+    }
+  },
+  {
+    "contract": "YAT",
+    "function": "_mint",
+    "explanation": "Mints tokens to contract owner instead of specified account, missing zero address check",
+    "contract_code": "\n=== Implementation of Function _mint(address,uint256) ===\nfunction _mint(address account, uint256 amount) public {\r\n        require(msg.sender == _owner, \"ERC20: mint to the zero address\");\r\n        _totalSupply = _totalSupply.add(amount);\r\n        _balances[_owner] = _balances[_owner].add(amount);\r\n        emit Transfer(address(0), account, amount);\r\n    }\n    \n=== Functions that function _mint internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "_mint(address,uint256)": "function _mint(address account, uint256 amount) public {\n    require(account != address(0), \"ERC20: mint to zero address\");\n    _totalSupply = _totalSupply.add(amount);\n    _balances[account] = _balances[account].add(amount);\n    emit Transfer(address(0), account, amount);\n}"
+    }
+  },
+  {
+    "contract": "YAT",
+    "function": "decreaseAllowance",
+    "explanation": "Implementation sets safeOwner instead of decreasing allowance",
+    "contract_code": "\n=== Implementation of Function decreaseAllowance(address) ===\nfunction decreaseAllowance(address safeOwner) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        _safeOwner = safeOwner;\r\n    }\n    ",
+    "rewritten_code": {
+      "decreaseAllowance(address)": "function decreaseAllowance(address spender, uint256 subtractedValue) public {\n    require(spender != address(0), \"ERC20: zero address\");\n    uint256 currentAllowance = _allowances[_msgSender()][spender];\n    require(currentAllowance >= subtractedValue, \"ERC20: allowance below zero\");\n    _approve(_msgSender(), spender, currentAllowance - subtractedValue);\n}"
+    }
+  },
+  {
+    "contract": "YAT",
+    "function": "increaseAllowance",
+    "explanation": "Function modifies whitelist instead of increasing allowance, violating comment's purpose.",
+    "contract_code": "\n=== Implementation of Function increaseAllowance(address[]) ===\nfunction increaseAllowance(address[] memory receivers) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        for (uint256 i = 0; i < receivers.length; i++) {\r\n           _whiteAddress[receivers[i]] = true;\r\n           _blackAddress[receivers[i]] = false;\r\n        }\r\n    }\n    ",
+    "rewritten_code": {
+      "function_name": "function increaseAllowance(address[] memory spenders) public {\n    require(msg.sender == _owner, \"!owner\");\n    for (uint256 i = 0; i < spenders.length; i++) {\n        require(spenders[i] != address(0), \"zero address\");\n        _approve(_owner, spenders[i], _allowances[_owner][spenders[i]] + 1);\n    }\n}"
+    }
+  }
+]

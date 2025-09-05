@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "TANGO",
+    "function": "turnOnTax",
+    "explanation": "Function allows multiple activation despite 'set once' specification",
+    "contract_code": "\n=== Implementation of Function turnOnTax() ===\nfunction turnOnTax() public onlyOwner{\n        taxing = true;\n        emit taxOn(block.timestamp);\n    }\n    \n=== Functions that function turnOnTax internally calls ===\nmodifier onlyOwner() {\n        _checkOwner();\n        _;\n    }",
+    "rewritten_code": {
+      "turnOnTax": "function turnOnTax() public onlyOwner {\n        require(!taxing, \"Already set\");\n        taxing = true;\n        emit taxOn(block.timestamp);\n    }"
+    }
+  }
+]

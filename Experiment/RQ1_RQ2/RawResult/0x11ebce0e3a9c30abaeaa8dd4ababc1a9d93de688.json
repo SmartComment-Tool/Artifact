@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "CBRNFT",
+    "function": "safeTransferFrom",
+    "explanation": "Implementation adds TRANSFER_ROLE check not mentioned in comments, violating specified approval logic.",
+    "contract_code": "\n=== Implementation of Function safeTransferFrom(address,address,uint256) ===\nfunction safeTransferFrom(\n        address from,\n        address to,\n        uint256 tokenId\n    ) public override(ERC721, IERC721) {\n        require(\n            _isApprovedOrOwner(_msgSender(), tokenId) || hasRole(TRANSFER_ROLE, _msgSender()),\n            \"ERC721: caller is not token owner nor approved\"\n        );\n        _safeTransfer(from, to, tokenId, \"\");\n    }\n    \n=== Functions that function safeTransferFrom internally calls ===\nfunction _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {\n        address owner = ERC721.ownerOf(tokenId);\n        return (spender == owner || isApprovedForAll(owner, spender) || getApproved(tokenId) == spender);\n    }\nfunction _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\nfunction _safeTransfer(\n        address from,\n        address to,\n        uint256 tokenId,\n        bytes memory data\n    ) internal virtual {\n        _transfer(from, to, tokenId);\n        require(_checkOnERC721Received(from, to, tokenId, data), \"ERC721: transfer to non ERC721Receiver implementer\");\n    }\nfunction hasRole(bytes32 role, address account) public view virtual override returns (bool) {\n        return _roles[role].members[account];\n    }",
+    "rewritten_code": {
+      "safeTransferFrom(address,address,uint256)": "function safeTransferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {\n        require(_isApprovedOrOwner(_msgSender(), tokenId), \"ERC721: caller is not token owner nor approved\");\n        _safeTransfer(from, to, tokenId, \"\");\n    }"
+    }
+  }
+]

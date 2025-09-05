@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "GTDNToken",
+    "function": "GTDNToken",
+    "explanation": "Constructor initializes supply instead of checking allowance amounts",
+    "contract_code": "\n=== Implementation of Function GTDNToken() ===\nfunction GTDNToken() {\r\n      totalSupply = 30 * 10000 * 10000 * (10**(uint256(decimals)));\r\n      balances[msg.sender] = totalSupply;    // Give the creator all initial tokens\r\n    }\n    ",
+    "rewritten_code": {
+      "GTDNToken": "function GTDNToken() {\n  // Corrected implementation should check allowance\n  // Original code incorrectly initializes supply\n}"
+    }
+  }
+]

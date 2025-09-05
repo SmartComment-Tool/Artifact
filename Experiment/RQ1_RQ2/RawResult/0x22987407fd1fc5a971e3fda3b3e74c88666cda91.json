@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "SRTToken",
+    "function": "constructor",
+    "explanation": "Constructor assigns tokens to parameter _wallet instead of msg.sender",
+    "contract_code": "\n=== Implementation of Function constructor(address) ===\nconstructor(address _wallet) public {\r\n    totalSupply_ = INITIAL_SUPPLY;\r\n    balances[_wallet] = INITIAL_SUPPLY;\r\n    emit Transfer(address(0), _wallet, INITIAL_SUPPLY);\r\n  }\n    ",
+    "rewritten_code": {
+      "constructor(address _wallet)": "constructor(address _wallet) public {\n    totalSupply_ = INITIAL_SUPPLY;\n    balances[msg.sender] = INITIAL_SUPPLY;\n    emit Transfer(address(0), msg.sender, INITIAL_SUPPLY);\n  }"
+    }
+  }
+]

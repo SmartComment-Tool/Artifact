@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ToonBase",
+    "function": "tokenURI",
+    "explanation": "Comment states may return empty string but implementation always constructs URI",
+    "contract_code": "\n=== Implementation of Function tokenURI(uint256) ===\nfunction tokenURI(uint256 _tokenId) public view returns (string) {\r\n        require(exists(_tokenId));\r\n        string memory slash = \"/\";\r\n        return endpoint.toSlice().concat(name_.toSlice()).toSlice().concat(slash.toSlice()).toSlice().concat(_tokenId.toString().toSlice());\r\n    }\n    \n=== Functions that function tokenURI internally calls ===\nfunction concat(slice memory self, slice memory other) internal pure returns (string memory) {\r\n        string memory ret = new string(self._len + other._len);\r\n        uint retptr;\r\n        assembly { retptr := add(ret, 32) }\r\n        memcpy(retptr, self._ptr, self._len);\r\n        memcpy(retptr + self._len, other._ptr, other._len);\r\n        return ret;\r\n    }\nfunction exists(uint256 _tokenId) public view returns (bool) {\r\n        address owner = tokenOwner[_tokenId];\r\n        return owner != address(0);\r\n    }\nfunction toSlice(string memory self) internal pure returns (slice memory) {\r\n        uint ptr;\r\n        assembly {\r\n            ptr := add(self, 0x20)\r\n        }\r\n        return slice(bytes(self).length, ptr);\r\n    }\nfunction toString(uint i) internal pure returns (string){\r\n        if (i == 0) return \"0\";\r\n        uint j = i;\r\n        uint length;\r\n        while (j != 0){\r\n            length++;\r\n            j /= 10;\r\n        }\r\n        bytes memory bstr = new bytes(length);\r\n        uint k = length - 1;\r\n        while (i != 0){\r\n            bstr[k--] = byte(48 + i % 10);\r\n            i /= 10;\r\n        }\r\n        return string(bstr);\r\n    }",
+    "rewritten_code": {
+      "function_name": "function tokenURI(uint256 _tokenId) public view returns (string) {\n        require(exists(_tokenId));\n        if (bytes(endpoint).length == 0) {\n            return \"\";\n        }\n        string memory slash = \"/\";\n        return endpoint.toSlice().concat(name_.toSlice()).toSlice().concat(slash.toSlice()).toSlice().concat(_tokenId.toString().toSlice());\n    }"
+    }
+  }
+]

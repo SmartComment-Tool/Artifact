@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ACMToken",
+    "function": "transferFrom",
+    "explanation": "Transfers tokens before updating allowance, violating allowance mechanism sequence",
+    "contract_code": "\n=== Implementation of Function transferFrom(address,address,uint256) ===\nual override returns (bool) {\r\n        _transfer(sender, recipient, amount);\r\n\r\n        uint256 currentAllowance = _allowances[sender][_msgSender()];\r\n        require(\r\n            currentAllowance >= amount,\r\n            \"ERC20: transfer amount exceeds allowance\"\r\n        );\r\n        unchecked {\r\n            _approve(sender, _msgSender(), currentAllowance - amount);\r\n        }\r\n\r\n        return true;\r\n    }\r\n\r\n    \n=== Functions that function transferFrom internally calls ===\n    require(from != address(0), \"ERC20: approve from the zero address\");\r\n        require(to != address(0), \"ERC20: approve to the zero address\");\r\n\r\n        _allowances[from][to] = amount;\r\n        emit Approval(from, to, amount);\r\n    }\r\n}\nal {\r\n        require(amount > 0, \"ERC20: transfer amount zero\");\r\n        require(sender != address(0), \"ERC20: transfer from the zero address\");\r\n        require(recipient != address(0), \"ERC20: transfer to the zero address\");\r\n\r\n        uint256 senderBalance = _balances[sender];\r\n        require(\r\n            senderBalance >= amount,\r\n            \"ERC20: transfer amount exceeds balance\"\r\n        );\r\n        unchecked {\r\n            _balances[sender] = senderBalance - amount;\r\n        }\r\n        _balances[recipient] += amount;\r\n\r\n        emit Transfer(sender, recipient, amount);\r\n    }\r\n\r\ngData() internal view virtual returns (bytes calldata) {\r\n        return msg.data;\r\n    }\r\n}\r\n\r",
+    "rewritten_code": {
+      "transferFrom": "function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {\n        uint256 currentAllowance = _allowances[sender][_msgSender()];\n        require(currentAllowance >= amount, \"ERC20: transfer amount exceeds allowance\");\n        unchecked {\n            _approve(sender, _msgSender(), currentAllowance - amount);\n        }\n        _transfer(sender, recipient, amount);\n        return true;\n    }"
+    }
+  }
+]

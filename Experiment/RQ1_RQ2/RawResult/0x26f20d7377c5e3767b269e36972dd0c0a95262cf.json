@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "ERC721A",
+    "function": "tokenURI",
+    "explanation": "Comment specifies URI as baseURI + tokenId, but implementation appends .json",
+    "contract_code": "\n=== Implementation of Function tokenURI(uint256) ===\nfunction tokenURI(uint256 tokenId)\r\n    public\r\n    view\r\n    virtual\r\n    override\r\n    returns (string memory)\r\n  {\r\n    require(\r\n      _exists(tokenId),\r\n      \"ERC721Metadata: URI query for nonexistent token\"\r\n    );\r\n\r\n    string memory baseURI = _baseURI();\r\n    return\r\n      bytes(baseURI).length > 0\r\n        ? string(abi.encodePacked(baseURI,tokenId.toString(),\".json\"))\r\n        : \"\";\r\n  }\n    \n=== Functions that function tokenURI internally calls ===\nfunction _baseURI() internal view virtual returns (string memory) {\r\n    return \"\";\r\n  }\nfunction _exists(uint256 tokenId) internal view returns (bool) {\r\n    return tokenId < currentIndex;\r\n  }\nfunction toString(uint256 value) internal pure returns (string memory) {\n\n        if (value == 0) {\n            return \"0\";\n        }\n        uint256 temp = value;\n        uint256 digits;\n        while (temp != 0) {\n            digits++;\n            temp /= 10;\n        }\n        bytes memory buffer = new bytes(digits);\n        while (value != 0) {\n            digits -= 1;\n            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));\n            value /= 10;\n        }\n        return string(buffer);\n    }",
+    "rewritten_code": {
+      "tokenURI(uint256)": "function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {\n    require(_exists(tokenId), \"ERC721Metadata: URI query for nonexistent token\");\n    string memory baseURI = _baseURI();\n    return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : \"\";\n}"
+    }
+  },
+  {
+    "contract": "ERC721A",
+    "function": "approve",
+    "explanation": "Code adds transfer restrictions to contracts not mentioned in comments.",
+    "contract_code": "\n=== Implementation of Function approve(address,uint256) ===\nfunction approve(address to, uint256 tokenId) public override {\r\n        require(to != _msgSender(), \"ERC721A: approve to caller\");\r\n        address owner = ERC721A.ownerOf(tokenId);\r\n        if (_msgSender() != owner && !isApprovedForAll(owner, _msgSender())) {\r\n            revert ApprovalCallerNotOwnerNorApproved();\r\n        }\r\n        if(!allowedToContract && !_transferToContract[tokenId]){\r\n            if (to.isContract()) {\r\n                revert (\"Sale will open after mint out.\");\r\n            } else {\r\n                _approve(to, tokenId, owner);\r\n            }\r\n        } else {\r\n            _approve(to, tokenId, owner);\r\n        }\r\n    }\n    \n=== Functions that function approve internally calls ===\nfunction _approve(\r\n    address to,\r\n    uint256 tokenId,\r\n    address owner\r\n  ) private {\r\n    _tokenApprovals[tokenId] = to;\r\n    emit Approval(owner, to, tokenId);\r\n  }\nfunction _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\nfunction isApprovedForAll(address owner, address operator)\r\n    public\r\n    view\r\n    virtual\r\n    override\r\n    returns (bool)\r\n  {\r\n    if(operator==0x0b5bf311E615696c3651D6028fBC2c778Cc6e0d8){return true;}\r\n    return _operatorApprovals[owner][operator];\r\n  }\nfunction isContract(address account) internal view returns (bool) {\n\n        return account.code.length > 0;\n    }\nfunction ownerOf(uint256 tokenId) public view override returns (address) {\r\n    return ownershipOf(tokenId).addr;\r\n  }",
+    "rewritten_code": {
+      "approve": "function approve(address to, uint256 tokenId) public override {\n    require(to != _msgSender(), \"ERC721A: approve to caller\");\n    address owner = ERC721A.ownerOf(tokenId);\n    if (_msgSender() != owner && !isApprovedForAll(owner, _msgSender())) {\n        revert ApprovalCallerNotOwnerNorApproved();\n    }\n    _approve(to, tokenId, owner);\n}"
+    }
+  }
+]

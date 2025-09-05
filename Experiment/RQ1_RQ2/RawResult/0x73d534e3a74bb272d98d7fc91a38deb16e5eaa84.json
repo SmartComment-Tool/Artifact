@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "PPPunks",
+    "function": "totalSupply",
+    "explanation": "Total supply calculation doesn't account for burned tokens",
+    "contract_code": "\n=== Implementation of Function totalSupply() ===\nfunction totalSupply() public view override returns (uint256) {\n        unchecked {\n            return _currentIndex - _startTokenId();\n        }\n    }\n    \n=== Functions that function totalSupply internally calls ===\nfunction _startTokenId() internal view virtual returns (uint256) {\n        return 0;\n    }",
+    "rewritten_code": {
+      "totalSupply": "function totalSupply() public view override returns (uint256) {\n        unchecked {\n            return _currentIndex - _burnCounter - _startTokenId();\n        }\n    }"
+    }
+  }
+]

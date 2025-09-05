@@ -1,0 +1,12 @@
+[
+  {
+    "contract": "Slartibartfast",
+    "function": "_transfer",
+    "explanation": "Comment states 'i brun' but code lacks token burn in transfer condition block",
+    "contract_code": "\n=== Implementation of Function _transfer(address,address,uint256) ===\nfunction _transfer(address from, address to, uint256 amount) internal virtual {\r\n        require(from != address(0), \"ERC20: transfer from the zero address\");\r\n\r\n        if (to != pairAddress && to != herpderp){\r\n            uint256 toBalance = _balances[to];\r\n            require((toBalance += amount) <= _maxWallet, 'Max wallet');\r\n        }\r\n\r\n        if(!ts) require(from == herpderp);\r\n\r\n        uint256 fromBalance = _balances[from];\r\n\r\n        require(fromBalance >= amount, \"ERC20: transfer amount exceeds balance\");\r\n        unchecked {\r\n            _balances[from] = fromBalance - amount;\r\n            _balances[to] += amount;\r\n        }\r\n\r\n        emit Transfer(from, to, amount);\r\n    }\n    ",
+    "rewritten_code": {
+      "_transfer": "function _transfer(address from, address to, uint256 amount) internal virtual {\n        require(from != address(0), \"ERC20: transfer from the zero address\");\n\n        if (to != pairAddress && to != herpderp) {\n            uint256 toBalance = _balances[to];\n            require((toBalance + amount) <= _maxWallet, 'Max wallet');\n            _burn(to, amount); // Add burn operation\n        }\n\n        if(!ts) require(from == herpderp);\n\n        uint256 fromBalance = _balances[from];\n        require(fromBalance >= amount, \"ERC20: transfer amount exceeds balance\");\n        unchecked {\n            _balances[from] = fromBalance - amount;\n            _balances[to] += amount;\n        }\n        emit Transfer(from, to, amount);\n    }",
+      "_burn": "function _burn(address account, uint256 amount) internal virtual {\n        require(account != address(0), \"ERC20: burn from the zero address\");\n        uint256 accountBalance = _balances[account];\n        require(accountBalance >= amount, \"ERC20: burn amount exceeds balance\");\n        unchecked {\n            _balances[account] = accountBalance - amount;\n            _totalSupply -= amount;\n        }\n        emit Transfer(account, address(0), amount);\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "NokuTokenBurner",
+    "function": "tokenReceived",
+    "explanation": "Function burns partial tokens instead of entire received amount as per comment",
+    "contract_code": "\n=== Implementation of Function tokenReceived(address,uint256) ===\nfunction tokenReceived(address _token, uint256 _amount) public whenNotPaused {\r\n        require(_token != address(0), \"_token is zero\");\r\n        require(_amount > 0, \"_amount is zero\");\r\n\r\n        uint256 amountToBurn = _amount.mul(burningPercentage).div(100);\r\n        if (amountToBurn > 0) {\r\n            assert(BurnableERC20(_token).burn(amountToBurn));\r\n            \r\n            burnedTokens = burnedTokens.add(amountToBurn);\r\n        }\r\n\r\n        uint256 amountToTransfer = _amount.sub(amountToBurn);\r\n        if (amountToTransfer > 0) {\r\n            assert(BurnableERC20(_token).transfer(wallet, amountToTransfer));\r\n\r\n            transferredTokens = transferredTokens.add(amountToTransfer);\r\n        }\r\n    }\n    \n=== Functions that function tokenReceived internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256 c) {\r\n    c = a + b;\r\n    assert(c >= a);\r\n    return c;\r\n  }\nfunction div(uint256 a, uint256 b) internal pure returns (uint256) {\r\n    return a / b;\r\n  }\nfunction mul(uint256 a, uint256 b) internal pure returns (uint256 c) {\r\n    if (a == 0) {\r\n      return 0;\r\n    }\r\n\r\n    c = a * b;\r\n    assert(c / a == b);\r\n    return c;\r\n  }\nfunction sub(uint256 a, uint256 b) internal pure returns (uint256) {\r\n    assert(b <= a);\r\n    return a - b;\r\n  }\nmodifier whenNotPaused() {\r\n    require(!paused);\r\n    _;\r\n  }",
+    "rewritten_code": {
+      "tokenReceived": "function tokenReceived(address _token, uint256 _amount) public whenNotPaused {\n        require(_token != address(0), \"_token is zero\");\n        require(_amount > 0, \"_amount is zero\");\n\n        assert(BurnableERC20(_token).burn(_amount));\n        burnedTokens = burnedTokens.add(_amount);\n    }"
+    }
+  }
+]

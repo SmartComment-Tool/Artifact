@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Ownable",
+    "function": "changeOwner",
+    "explanation": "Function sets newOwner instead of transferring ownership directly",
+    "contract_code": "\n=== Implementation of Function changeOwner(address) ===\nfunction changeOwner(address _newOwner) public onlyOwner {\r\n        require(_newOwner != owner);\r\n        newOwner = _newOwner;\r\n    }\n    \n=== Functions that function changeOwner internally calls ===\nmodifier onlyOwner() {\r\n        require(msg.sender == owner);\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "changeOwner(address)": "function changeOwner(address _newOwner) public onlyOwner {\n        require(_newOwner != address(0));\n        owner = _newOwner;\n    }"
+    }
+  }
+]

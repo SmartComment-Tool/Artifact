@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "JoiningFee",
+    "function": "calc",
+    "explanation": "Missing scaling factor 1e18 in fee calculation.",
+    "contract_code": "\n=== Implementation of Function calc(uint256,uint256,address) ===\nfunction calc(\n        uint256 firstPeriodStartTimestamp,\n        uint256 periodDuration,\n        address vault) external view returns (uint256) \n    {\n        uint256 feePerHour = hourlyJoiningFeeFor[vault];\n        if (feePerHour == 0) { \n            feePerHour = defaultHourlyJoiningFee;\n        }\n\n        uint256 numCycles = (block.timestamp - firstPeriodStartTimestamp) / periodDuration;\n        return (block.timestamp - (numCycles * periodDuration) - firstPeriodStartTimestamp) / 3600 * feePerHour;\n    }\n    ",
+    "rewritten_code": {
+      "calc": "function calc(\n        uint256 firstPeriodStartTimestamp,\n        uint256 periodDuration,\n        address vault) external view returns (uint256) \n    {\n        uint256 feePerHour = hourlyJoiningFeeFor[vault];\n        if (feePerHour == 0) { \n            feePerHour = defaultHourlyJoiningFee;\n        }\n\n        uint256 numCycles = (block.timestamp - firstPeriodStartTimestamp) / periodDuration;\n        return ((block.timestamp - (numCycles * periodDuration) - firstPeriodStartTimestamp) / 3600 * feePerHour) * 1e18;\n    }"
+    }
+  }
+]

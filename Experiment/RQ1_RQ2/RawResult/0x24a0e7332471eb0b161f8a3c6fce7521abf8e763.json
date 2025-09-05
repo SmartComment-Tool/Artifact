@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "GOATS",
+    "function": "royaltyInfo",
+    "explanation": "Royalty recipient should be trolls contract per comment but uses beneficiary address.",
+    "contract_code": "\n=== Implementation of Function royaltyInfo(uint256,uint256) ===\nfunction royaltyInfo(uint256, uint256 _salePrice)\n        external\n        view\n        virtual\n        returns (address, uint256)\n    {\n        return (beneficiary, (_salePrice * 5) / 100);\n    }\n    ",
+    "rewritten_code": {
+      "royaltyInfo": "function royaltyInfo(uint256, uint256 _salePrice)\n        external\n        view\n        virtual\n        returns (address, uint256)\n    {\n        return (address(trolls), (_salePrice * 5) / 100);\n    }"
+    }
+  }
+]

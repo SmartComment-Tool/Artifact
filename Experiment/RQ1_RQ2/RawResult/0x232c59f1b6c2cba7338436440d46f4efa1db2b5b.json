@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "AccessControlledAggregator",
+    "function": "latestRoundData",
+    "explanation": "Missing revert on empty data contradicts 'raise No data present' comment.",
+    "contract_code": "\n=== Implementation of Function latestRoundData() ===\natestRoundData()\n    public\n    view\n    override\n    checkAccess()\n    returns (\n      uint80 roundId,\n      int256 answer,\n      uint256 startedAt,\n      uint256 updatedAt,\n      uint80 answeredInRound\n    )\n  {\n    return super.latestRoundData();\n  }\n\n    \n=== Functions that function latestRoundData internally calls ===\nier checkAccess() {\n    require(hasAccess(msg.sender, msg.data), \"No access\");\n    _;\n  }\n}\n\n/\nion latestRoundData()\n    public\n    view\n    virtual\n    override\n    returns (\n      uint80 roundId,\n      int256 answer,\n      uint256 startedAt,\n      uint256 updatedAt,\n      uint80 answeredInRound\n    )\n  {\n    return getRoundData(latestRoundId);\n  }\n\n\n  ",
+    "rewritten_code": {
+      "latestRoundData()": "function latestRoundData() public view override checkAccess() returns (uint80, int256, uint256, uint256, uint80) {\n    (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound) = super.latestRoundData();\n    require(answer != 0 || updatedAt != 0, \"No data present\");\n    return (roundId, answer, startedAt, updatedAt, answeredInRound);\n  }"
+    }
+  }
+]

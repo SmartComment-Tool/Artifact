@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "MyAdvancedToken",
+    "function": "mintToken",
+    "explanation": "Minting emits Transfer from contract instead of zero to target",
+    "contract_code": "\n=== Implementation of Function mintToken(address,uint256) ===\nfunction mintToken(address target, uint256 mintedAmount) onlyOwner public {\r\n        balanceOf[target] += mintedAmount;\r\n        totalSupply += mintedAmount;\r\n        emit Transfer(0, this, mintedAmount);\r\n        emit Transfer(this, target, mintedAmount);\r\n    }\n    \n=== Functions that function mintToken internally calls ===\nmodifier onlyOwner {\r\n        require(msg.sender == owner);\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "mintToken": "function mintToken(address target, uint256 mintedAmount) onlyOwner public {\n        balanceOf[target] += mintedAmount;\n        totalSupply += mintedAmount;\n        emit Transfer(address(0), target, mintedAmount);\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721AQueryable",
+    "function": "tokensOfOwner",
+    "explanation": "Function uses incorrect ownership tracking logic, returns tokens not owned by `owner`.",
+    "contract_code": "\n=== Implementation of Function tokensOfOwner(address) ===\nfunction tokensOfOwner(address owner) external view override returns (uint256[] memory) {\n        unchecked {\n            uint256 tokenIdsIdx;\n            address currOwnershipAddr;\n            uint256 tokenIdsLength = balanceOf(owner);\n            uint256[] memory tokenIds = new uint256[](tokenIdsLength);\n            TokenOwnership memory ownership;\n            for (uint256 i = _startTokenId(); tokenIdsIdx != tokenIdsLength; ++i) {\n                ownership = _ownerships[i];\n                if (ownership.burned) {\n                    continue;\n                }\n                if (ownership.addr != address(0)) {\n                    currOwnershipAddr = ownership.addr;\n                }\n                if (currOwnershipAddr == owner) {\n                    tokenIds[tokenIdsIdx++] = i;\n                }\n            }\n            return tokenIds;\n        }\n    }\n    \n=== Functions that function tokensOfOwner internally calls ===\nfunction _startTokenId() internal view virtual returns (uint256) {\n        return 0;\n    }\nfunction balanceOf(address owner) public view override returns (uint256) {\n        if (owner == address(0)) revert BalanceQueryForZeroAddress();\n        return uint256(_addressData[owner].balance);\n    }",
+    "rewritten_code": {
+      "tokensOfOwner": "function tokensOfOwner(address owner) external view override returns (uint256[] memory) {\n        unchecked {\n            uint256[] memory tokenIds = new uint256[](balanceOf(owner));\n            uint256 tokenIdsIdx;\n            for (uint256 i = _startTokenId(); i < _currentIndex; i++) {\n                TokenOwnership memory ownership = _ownershipOf(i);\n                if (!ownership.burned && ownership.addr == owner) {\n                    tokenIds[tokenIdsIdx++] = i;\n                }\n            }\n            return tokenIds;\n        }\n    }"
+    }
+  }
+]

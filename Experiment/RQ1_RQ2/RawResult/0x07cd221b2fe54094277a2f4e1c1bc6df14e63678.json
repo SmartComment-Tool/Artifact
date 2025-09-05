@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721",
+    "function": "approve",
+    "explanation": "Code adds a check that 'to' cannot be the owner, which is not specified in the comments.",
+    "contract_code": "\n=== Implementation of Function approve(address,uint256) ===\nfunction approve(address to, uint256 tokenId) public virtual override {\n        address owner = ownerOf(tokenId);\n        require(to != owner, \"ERC721: approval to current owner\");\n\n        require(_msgSender() == owner || isApprovedForAll(owner, _msgSender()),\n            \"ERC721: approve caller is not owner nor approved for all\"\n        );\n\n        _approve(to, tokenId);\n    }\n    \n=== Functions that function approve internally calls ===\nfunction _approve(address to, uint256 tokenId) private {\n        _tokenApprovals[tokenId] = to;\n        emit Approval(ownerOf(tokenId), to, tokenId);\n    }\nfunction _msgSender() internal view virtual returns (address payable) {\n        return msg.sender;\n    }\nfunction isApprovedForAll(address owner, address operator) public view override returns (bool) {\n        return _operatorApprovals[owner][operator];\n    }\nfunction ownerOf(uint256 tokenId) public view override returns (address) {\n        return _tokenOwners.get(tokenId, \"ERC721: owner query for nonexistent token\");\n    }",
+    "rewritten_code": {
+      "approve(address,uint256)": "function approve(address to, uint256 tokenId) public virtual override {\n        address owner = ownerOf(tokenId);\n        require(_msgSender() == owner || isApprovedForAll(owner, _msgSender()),\n            \"ERC721: approve caller is not owner nor approved for all\"\n        );\n        _approve(to, tokenId);\n    }"
+    }
+  }
+]

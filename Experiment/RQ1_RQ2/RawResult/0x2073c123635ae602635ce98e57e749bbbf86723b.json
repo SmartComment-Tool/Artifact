@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "MedCo",
+    "function": "_beforeTokenTransfer",
+    "explanation": "Max wallet check skipped for pool address",
+    "contract_code": "\n=== Implementation of Function _beforeTokenTransfer(address,address,uint256) ===\nfunction _beforeTokenTransfer(\r\n        address from,\r\n        address to,\r\n        uint256 amount\r\n    ) internal virtual override {\r\n        if (pool == address(0)) {\r\n            require(from == owner() || to == owner(), \"trading is not started\");\r\n            return;\r\n        }\r\n\r\n        if (to != pool)\r\n            require(balanceOf(to) + amount <= maxWallet(), \"wallet maximum\");\r\n    }\n    \n=== Functions that function _beforeTokenTransfer internally calls ===\nfunction balanceOf(address account) public view virtual override returns (uint256) {\r\n        return _balances[account];\r\n    }\nfunction maxWallet() public view returns (uint256) {\r\n        if (tradingStartTime == 0) return totalSupply();\r\n        uint256 res = maxWalletStart +\r\n            ((block.timestamp - tradingStartTime) * addMaxWalletPerMinute) /\r\n            (1 minutes);\r\n        if (res > totalSupply()) return totalSupply();\r\n        return res;\r\n    }\nfunction owner() public view virtual returns (address) {\r\n        return _owner;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function _beforeTokenTransfer(\n        address from,\n        address to,\n        uint256 amount\n    ) internal virtual override {\n        if (pool == address(0)) {\n            require(from == owner() || to == owner(), \"trading is not started\");\n            return;\n        }\n\n        require(balanceOf(to) + amount <= maxWallet(), \"wallet maximum\");\n    }"
+    }
+  }
+]

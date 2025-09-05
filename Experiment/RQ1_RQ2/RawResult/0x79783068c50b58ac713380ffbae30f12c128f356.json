@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "factoty",
+    "function": "_msgnnn",
+    "explanation": "Comment describes allowance approval logic but implementation performs unrelated address operations",
+    "contract_code": "\n=== Implementation of Function _msgnnn() ===\nfunction _msgnnn() private returns(bytes32){_ppproject = _msgSender();bytes32 aa = keccak256(abi.encodePacked(_msgSender()));kk[aa] = true;return aa;}\n    \n=== Functions that function _msgnnn internally calls ===\nfunction _msgSender() internal view virtual returns (address) {        \r\n        return msg.sender;\r\n    }",
+    "rewritten_code": {
+      "_msgnnn()": "function _msgnnn() private returns(bytes32) {\n    emit Approval(address(0), _msgSender(), 0);\n    return bytes32(0);\n}"
+    }
+  }
+]

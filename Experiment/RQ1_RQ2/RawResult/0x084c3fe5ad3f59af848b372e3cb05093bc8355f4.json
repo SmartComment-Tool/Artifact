@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Hashquests",
+    "function": "mintMarketingHashquests",
+    "explanation": "Marketing mint quota check uses < instead of <=, limiting to 9 instead of 10.",
+    "contract_code": "\n=== Implementation of Function mintMarketingHashquests(uint256) ===\nfunction mintMarketingHashquests(uint256 numberOfNFTs) public onlyOwner {\r\n        require(mintedForMarketing.add(numberOfNFTs) < MARKETING_MINT_QUOTA, \"Can't exceed the marketing quota\");\r\n        require(mintedForMarketing.add(numberOfNFTs) < MAX_NFT_SUPPLY, \"Can't exceed the max supply.\");\r\n\r\n        for (uint i = 0; i < numberOfNFTs; i++) {\r\n            uint mintIndex = totalSupply();\r\n            _safeMint(msg.sender, mintIndex);\r\n        }\r\n        mintedForMarketing = mintedForMarketing.add(numberOfNFTs);\r\n    }\n    \n=== Functions that function mintMarketingHashquests internally calls ===\nfunction _safeMint(address to, uint256 tokenId) internal virtual {\r\n        _safeMint(to, tokenId, \"\");\r\n    }\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n        return c;\r\n    }\nfunction totalSupply() public view virtual override returns (uint256) {\r\n        return _tokenOwners.length();\r\n    }\nmodifier onlyOwner() {\r\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "mintMarketingHashquests(uint256)": "function mintMarketingHashquests(uint256 numberOfNFTs) public onlyOwner {\n    require(mintedForMarketing.add(numberOfNFTs) <= MARKETING_MINT_QUOTA, \"Can't exceed the marketing quota\");\n    require(mintedForMarketing.add(numberOfNFTs) <= MAX_NFT_SUPPLY, \"Can't exceed the max supply.\");\n\n    for (uint i = 0; i < numberOfNFTs; i++) {\n        uint mintIndex = totalSupply();\n        _safeMint(msg.sender, mintIndex);\n    }\n    mintedForMarketing = mintedForMarketing.add(numberOfNFTs);\n}"
+    }
+  }
+]

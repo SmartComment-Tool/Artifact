@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC721A",
+    "function": "setApprovalForAll",
+    "explanation": "Missing check preventing self-approval of operator",
+    "contract_code": "\n=== Implementation of Function setApprovalForAll(address,bool) ===\nfunction setApprovalForAll(address operator, bool approved) public virtual override {\r\n        _operatorApprovals[_msgSenderERC721A()][operator] = approved;\r\n        emit ApprovalForAll(_msgSenderERC721A(), operator, approved);\r\n    }\n    \n=== Functions that function setApprovalForAll internally calls ===\nfunction _msgSenderERC721A() internal view virtual returns (address) {\r\n        return msg.sender;\r\n    }",
+    "rewritten_code": {
+      "setApprovalForAll(address,bool)": "function setApprovalForAll(address operator, bool approved) public virtual override {\n        require(operator != _msgSenderERC721A(), \"ERC721A: approve to caller\");\n        _operatorApprovals[_msgSenderERC721A()][operator] = approved;\n        emit ApprovalForAll(_msgSenderERC721A(), operator, approved);\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Token",
+    "function": "unFreeze",
+    "explanation": "Function lacks parameter declaration for _step and _end in unFreeze implementation",
+    "contract_code": "\n=== Implementation of Function unFreeze(uint8) ===\n    uint8  _start=0;\r\n        for(; _end>_start; _end--){\r\n            FreezeInfo storage fInfo = freezeOf[_step][_end-1];\r\n            uint256 _amount = fInfo.amount;\r\n            balanceOf[fInfo.user] += _amount;\r\n            delete freezeOf[_step][_end-1];\r\n            lastFreezeSeq[_step]--;\r\n            emit Unfreeze(fInfo.user, _amount);\r\n        }\r\n    }\r\n\r\n    function generateTokens(address _user, uint _amount) onlyOwner public returns (bool) {\r\n        _amount=_amount*10**uint256(decimals);\r\n        return _generateTokens(_user,_amount);\r\n    }\r\n\r\n    function _generateT\n    \n=== Functions that function unFreeze internally calls ===\n}\r\n\r\n    modifier moreThanZero(uint256 _value){\r\n        if (_value <= 0){\r\n    ",
+    "rewritten_code": {
+      "unFreeze(uint8)": "function unFreeze(uint8 _step) onlyOwner public returns (bool) {\n        uint8 _end = lastFreezeSeq[_step];\n        uint8 _start = 0;\n        for(; _end > _start; _end--) {\n            FreezeInfo storage fInfo = freezeOf[_step][_end-1];\n            balanceOf[fInfo.user] += fInfo.amount;\n            delete freezeOf[_step][_end-1];\n            lastFreezeSeq[_step]--;\n            emit Unfreeze(fInfo.user, fInfo.amount);\n        }\n        return true;\n    }"
+    }
+  }
+]

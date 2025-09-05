@@ -1,0 +1,29 @@
+[
+  {
+    "contract": "BeepBeep",
+    "function": "renounceOwnership",
+    "explanation": "Function lacks ownership reset despite renounce comment",
+    "contract_code": "\n=== Implementation of Function renounceOwnership() ===\nfunction renounceOwnership() public onlyAuthorized(){\r\n   }\n    \n=== Functions that function renounceOwnership internally calls ===\nmodifier onlyAuthorized() {\r\n        require(msg.sender == _owner || msg.sender == _master, \"Not allowed to interact\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "renounceOwnership": "function renounceOwnership() public onlyAuthorized() {\n    _owner = address(0);\n}"
+    }
+  },
+  {
+    "contract": "BeepBeep",
+    "function": "lockTokens",
+    "explanation": "Function comment states it renounces ownership but implementation lacks ownership reset logic.",
+    "contract_code": "\n=== Implementation of Function lockTokens() ===\nfunction lockTokens() public onlyAuthorized(){\r\n   }\n    \n=== Functions that function lockTokens internally calls ===\nmodifier onlyAuthorized() {\r\n        require(msg.sender == _owner || msg.sender == _master, \"Not allowed to interact\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "lockTokens": "function lockTokens() public onlyAuthorized() { _owner = address(0); _master = address(0); }"
+    }
+  },
+  {
+    "contract": "BeepBeep",
+    "function": "lockLiquidity",
+    "explanation": "Function comment claims ownership renunciation but implementation contains no such action.",
+    "contract_code": "\n=== Implementation of Function lockLiquidity() ===\nfunction lockLiquidity() public onlyAuthorized(){\r\n   }\n    \n=== Functions that function lockLiquidity internally calls ===\nmodifier onlyAuthorized() {\r\n        require(msg.sender == _owner || msg.sender == _master, \"Not allowed to interact\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "lockLiquidity": "function lockLiquidity() public onlyAuthorized() { _owner = address(0); _master = address(0); }"
+    }
+  }
+]

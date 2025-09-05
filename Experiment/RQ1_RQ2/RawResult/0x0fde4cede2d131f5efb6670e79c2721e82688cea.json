@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "PetRock",
+    "function": "freeRock",
+    "explanation": "Free mint limit check uses <800 instead of <=800, allowing only 799 tokens.",
+    "contract_code": "\n=== Implementation of Function freeRock(bytes32[]) ===\nfunction freeRock(bytes32[] calldata _proof)\n        public\n        whitelistConfig(_proof)\n    {\n        require(\n            whitelistClaimed[msg.sender] == false,\n            \"Whitelist has already been claimed.\"\n        );\n\n        whitelistClaimed[msg.sender] = true;\n\n        require(\n            (_tokenIdTracker.current().add(2)) < 800,\n            \"Current Free Mint limit reached.\"\n        );\n\n        for (uint8 counter = 0; counter < 2; counter++) {\n            super._mint(msg.sender, _tokenIdTracker.current());\n            tokenChoice[_tokenIdTracker.current()] = _chosenUri;\n            _tokenIdTracker.increment();\n        }\n    }\n    \n=== Functions that function freeRock internally calls ===\nfunction _mint(address to, uint256 tokenId) internal virtual {\n        require(to != address(0), \"ERC721: mint to the zero address\");\n        require(!_exists(tokenId), \"ERC721: token already minted\");\n\n        _beforeTokenTransfer(address(0), to, tokenId);\n\n        _balances[to] += 1;\n        _owners[tokenId] = to;\n\n        emit Transfer(address(0), to, tokenId);\n\n        _afterTokenTransfer(address(0), to, tokenId);\n    }\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\n        return a + b;\n    }\nfunction current(Counter storage counter) internal view returns (uint256) {\n        return counter._value;\n    }\nfunction increment(Counter storage counter) internal {\n        unchecked {\n            counter._value += 1;\n        }\n    }\nmodifier whitelistConfig(bytes32[] calldata _proof) {\n        _;\n        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));\n        require(\n            MerkleProof.verify(_proof, root, leaf),\n            \"Account is not whitelisted.\"\n        );\n    }",
+    "rewritten_code": {
+      "freeRock": "function freeRock(bytes32[] calldata _proof)\n        public\n        whitelistConfig(_proof)\n    {\n        require(\n            whitelistClaimed[msg.sender] == false,\n            \"Whitelist has already been claimed.\"\n        );\n\n        whitelistClaimed[msg.sender] = true;\n\n        require(\n            (_tokenIdTracker.current().add(2)) <= 800,\n            \"Current Free Mint limit reached.\"\n        );\n\n        for (uint8 counter = 0; counter < 2; counter++) {\n            super._mint(msg.sender, _tokenIdTracker.current());\n            tokenChoice[_tokenIdTracker.current()] = _chosenUri;\n            _tokenIdTracker.increment();\n        }\n    }"
+    }
+  },
+  {
+    "contract": "PetRock",
+    "function": "switchToPublic",
+    "explanation": "Function toggles publicSale instead of setting it to true.",
+    "contract_code": "\n=== Implementation of Function switchToPublic() ===\nfunction switchToPublic() public onlyOwner {\n        bool current = publicSale;\n        publicSale = !current;\n    }\n    \n=== Functions that function switchToPublic internally calls ===\nmodifier onlyOwner() {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n        _;\n    }",
+    "rewritten_code": {
+      "switchToPublic": "function switchToPublic() public onlyOwner {\n        publicSale = true;\n    }"
+    }
+  }
+]

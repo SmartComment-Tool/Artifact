@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "QuiddMintables",
+    "function": "getRoyaltyConfigurations",
+    "explanation": "Function returns custom royalty configs instead of default as per comment",
+    "contract_code": "\n=== Implementation of Function getRoyaltyConfigurations() ===\nfunction getRoyaltyConfigurations()\n    public\n    view\n    returns (RoyaltiesConfig[] memory)\n  {\n    return _getRoyaltyConfigurations();\n  }\n    \n=== Functions that function getRoyaltyConfigurations internally calls ===\nnction _getRoyaltyConfigurations()\n    internal\n    view\n    returns (RoyaltiesConfig[] memory) {\n    return _royaltyConfigs;\n  }\n\n",
+    "rewritten_code": {
+      "getRoyaltyConfigurations": "function getRoyaltyConfigurations() public view returns (PaymentInfo memory) {\n    return _getDefaultRoyalties();\n}"
+    }
+  },
+  {
+    "contract": "QuiddMintables",
+    "function": "getDefaultRoyalties",
+    "explanation": "Function returns default royalties but comment states it returns custom configurations excluding default.",
+    "contract_code": "\n=== Implementation of Function getDefaultRoyalties() ===\nfunction getDefaultRoyalties()\n    public\n    view\n    returns (PaymentInfo memory)\n  {\n    return _getDefaultRoyalties();\n  }\n    \n=== Functions that function getDefaultRoyalties internally calls ===\nnction _getDefaultRoyalties()\n    public\n    view\n    returns (PaymentInfo memory)\n  {\n    return _defaultRoyalties;\n  }\n\n",
+    "rewritten_code": {
+      "getDefaultRoyalties": "function getDefaultRoyalties() public view returns (PaymentInfo memory) {\n    return _getDefaultRoyalties();\n}"
+    }
+  }
+]

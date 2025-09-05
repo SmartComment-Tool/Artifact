@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Aggregator",
+    "function": "swap",
+    "explanation": "Comment specifies uint256 arrays but implementation uses int256 arrays.",
+    "contract_code": "\n=== Implementation of Function swap(int256[],int256[]) ===\nfunction swap(int256[] memory _a, int256[] memory _b)\r\n    private\r\n    pure\r\n    returns(int256[] memory, int256[] memory)\r\n  {\r\n    return (_b, _a);\r\n  }\n    ",
+    "rewritten_code": {
+      "swap": "function swap(int256[] memory _a, int256[] memory _b)\n    private\n    pure\n    returns(int256[] memory, int256[] memory)\n  {\n    return (_b, _a);\n  }"
+    }
+  }
+]

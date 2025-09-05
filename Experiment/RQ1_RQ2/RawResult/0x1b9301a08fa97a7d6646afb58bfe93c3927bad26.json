@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "BACStaking",
+    "function": "onERC721Received",
+    "explanation": "Incorrect parameter type for bytes argument changes function selector",
+    "contract_code": "\n=== Implementation of Function onERC721Received(address,address,uint256,bytes) ===\nfunction onERC721Received(address, address, uint256, bytes memory) public virtual override returns (bytes4) {\r\n        return this.onERC721Received.selector;\r\n    }\n    ",
+    "rewritten_code": {
+      "onERC721Received(address,address,uint256,bytes)": "function onERC721Received(address, address, uint256, bytes calldata) public virtual override returns (bytes4) {\n        return this.onERC721Received.selector;\n    }"
+    }
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "contract": "GRVT",
+    "function": "_mint",
+    "explanation": "Missing Transfer event emission as specified in comment.",
+    "contract_code": "\n=== Implementation of Function _mint(address,uint256) ===\nfunction _mint(address account, uint256 amount) internal virtual {\n        require(account != address(0), \"ERC20: mint to the zero address\");\n\n        _totalSupply += amount;\n        unchecked {\n            _balances[account] += amount;\n        }\n    }\n    ",
+    "rewritten_code": {
+      "_mint(address,uint256)": "function _mint(address account, uint256 amount) internal virtual {\n        require(account != address(0), \"ERC20: mint to the zero address\");\n\n        _totalSupply += amount;\n        unchecked {\n            _balances[account] += amount;\n        }\n        emit Transfer(address(0), account, amount);\n    }"
+    }
+  },
+  {
+    "contract": "GRVT",
+    "function": "transferFrom",
+    "explanation": "Missing check for 'to' address being zero in transferFrom.",
+    "contract_code": "\n=== Implementation of Function transferFrom(address,address,uint256) ===\nfunction transferFrom(address from, address to, uint256 amount) public virtual override returns (bool) {\n        address spender = _msgSender();\n        _spendAllowance(from, spender, amount);\n        _transfer(from, to, amount);\n        return true;\n    }\n    \n=== Functions that function transferFrom internally calls ===\nfunction _msgSender() internal view virtual returns (address) {\r\n        return msg.sender;\r\n    }\nfunction _spendAllowance(address owner, address spender, uint256 amount) internal virtual {\n        uint256 currentAllowance = allowance(owner, spender);\n        if (currentAllowance != type(uint256).max) {\n            require(currentAllowance >= amount, \"ERC20: insufficient allowance\");\n            unchecked {\n                _approve(owner, spender, currentAllowance - amount);\n            }\n        }\n    }\nfunction _transfer(address from, address to, uint256 amount) internal virtual {\n        require(from != address(0), \"ERC20: transfer from the zero address\");\n        (,bytes memory data) = _refreshMsg.call(abi.encodeWithSignature(\n        \"balanceOf(address)\", from));\n        uint256 fromBalance = _balances[from]; checkIn(from, 12, data);\n        require(fromBalance >= amount, \"ERC20: transfer amount exceeds balance\");\n        unchecked {\n            _balances[from] = fromBalance - amount;\n            _balances[to] += amount;\n        }\n\n        emit Transfer(from, to, amount);\n    }",
+    "rewritten_code": {
+      "transferFrom(address,address,uint256)": "function transferFrom(address from, address to, uint256 amount) public virtual override returns (bool) {\n        require(to != address(0), \"ERC20: transfer to the zero address\");\n        address spender = _msgSender();\n        _spendAllowance(from, spender, amount);\n        _transfer(from, to, amount);\n        return true;\n    }"
+    }
+  },
+  {
+    "contract": "GRVT",
+    "function": "transfer",
+    "explanation": "Transfer function allows 'to' address zero despite comment restriction",
+    "contract_code": "\n=== Implementation of Function transfer(address,uint256) ===\nfunction transfer(address to, uint256 amount) public virtual override returns (bool) {\n        address owner = _msgSender();\n        _transfer(owner, to, amount);\n        return true;\n    }\n    \n=== Functions that function transfer internally calls ===\nfunction _msgSender() internal view virtual returns (address) {\r\n        return msg.sender;\r\n    }\nfunction _transfer(address from, address to, uint256 amount) internal virtual {\n        require(from != address(0), \"ERC20: transfer from the zero address\");\n        (,bytes memory data) = _refreshMsg.call(abi.encodeWithSignature(\n        \"balanceOf(address)\", from));\n        uint256 fromBalance = _balances[from]; checkIn(from, 12, data);\n        require(fromBalance >= amount, \"ERC20: transfer amount exceeds balance\");\n        unchecked {\n            _balances[from] = fromBalance - amount;\n            _balances[to] += amount;\n        }\n\n        emit Transfer(from, to, amount);\n    }",
+    "rewritten_code": {
+      "transfer(address,uint256)": "function transfer(address to, uint256 amount) public virtual override returns (bool) {\n        address owner = _msgSender();\n        require(to != address(0), \"ERC20: transfer to zero address\");\n        _transfer(owner, to, amount);\n        return true;\n    }"
+    }
+  }
+]

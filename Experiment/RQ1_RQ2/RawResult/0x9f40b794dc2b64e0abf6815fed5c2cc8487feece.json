@@ -1,0 +1,21 @@
+[
+  {
+    "contract": "NFT",
+    "function": "totalSupply",
+    "explanation": "Implementation doesn't account for burned tokens in total supply calculation",
+    "contract_code": "\n=== Implementation of Function totalSupply() ===\nfunction totalSupply() public view override returns (uint256) {\r\n        unchecked {\r\n            return _currentIndex - _startTokenId();\r\n        }\r\n    }\n    \n=== Functions that function totalSupply internally calls ===\nfunction _startTokenId() internal view virtual returns (uint256) {\r\n        return 0;\r\n    }",
+    "rewritten_code": {
+      "totalSupply": "function totalSupply() public view override returns (uint256) {\n        unchecked {\n            return _currentIndex - _startTokenId() - _totalBurned();\n        }\n    }",
+      "_totalBurned": "function _totalBurned() internal view returns (uint256) {\n        return 0;\n    }"
+    }
+  },
+  {
+    "contract": "NFT",
+    "function": "approve",
+    "explanation": "Missing check preventing approval to caller's own address",
+    "contract_code": "\n=== Implementation of Function approve(address,uint256) ===\nfunction approve(address to, uint256 tokenId) public override {\r\n        address owner = address(uint160(_packedOwnershipOf(tokenId)));\r\n        if (to == owner) revert();\r\n\r\n        if (_msgSenderERC721A() != owner)\r\n            if (!isApprovedForAll(owner, _msgSenderERC721A())) {\r\n                revert ApprovalCallerNotOwnerNorApproved();\r\n            }\r\n\r\n        _tokenApprovals[tokenId] = to;\r\n        emit Approval(owner, to, tokenId);\r\n    }\n    \n=== Functions that function approve internally calls ===\nfunction _msgSenderERC721A() internal view virtual returns (address) {\r\n        return msg.sender;\r\n    }\nfunction _packedOwnershipOf(uint256 tokenId) private view returns (uint256) {\r\n        uint256 curr = tokenId;\r\n\r\n        unchecked {\r\n            if (_startTokenId() <= curr)\r\n                if (curr < _currentIndex) {\r\n                    uint256 packed = _packedOwnerships[curr];\r\n                    if (packed & BITMASK_BURNED == 0) {\r\n                        while (packed == 0) {\r\n                            packed = _packedOwnerships[--curr];\r\n                        }\r\n                        return packed;\r\n                    }\r\n                }\r\n        }\r\n        revert OwnerQueryForNonexistentToken();\r\n    }\nfunction isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {\r\n        return _operatorApprovals[owner][operator];\r\n    }",
+    "rewritten_code": {
+      "approve(address,uint256)": "function approve(address to, uint256 tokenId) public override {\n        address owner = address(uint160(_packedOwnershipOf(tokenId)));\n        if (to == _msgSenderERC721A()) revert ApproveToCaller();\n\n        if (_msgSenderERC721A() != owner)\n            if (!isApprovedForAll(owner, _msgSenderERC721A())) {\n                revert ApprovalCallerNotOwnerNorApproved();\n            }\n\n        _tokenApprovals[tokenId] = to;\n        emit Approval(owner, to, tokenId);\n    }"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Ownable",
+    "function": "renounceOwnership",
+    "explanation": "Sets owner to dead address instead of address(0), contradicting 'leaves contract without owner'",
+    "contract_code": "\n=== Implementation of Function renounceOwnership() ===\nfunction renounceOwnership() public onlyOwner {\r\n        emit OwnershipTransferred(\r\n            _owner,\r\n            0x000000000000000000000000000000000000dEaD\r\n        );\r\n        _owner = 0x000000000000000000000000000000000000dEaD;\r\n    }\n    \n=== Functions that function renounceOwnership internally calls ===\nmodifier onlyOwner() {\r\n        require(_owner == _msgSender(), \"Ownable: caller is not the owner\");\r\n        _;\r\n    }",
+    "rewritten_code": {
+      "renounceOwnership()": "function renounceOwnership() public onlyOwner {\n        emit OwnershipTransferred(_owner, address(0));\n        _owner = address(0);\n    }"
+    }
+  }
+]

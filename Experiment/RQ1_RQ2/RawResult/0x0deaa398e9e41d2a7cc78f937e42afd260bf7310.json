@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ExclusivePlatform",
+    "function": "doTransfer",
+    "explanation": "Missing check preventing transfers to contract itself",
+    "contract_code": "\n=== Implementation of Function doTransfer(address,address,uint256) ===\nfunction doTransfer(address _from, address _to, uint _amount) internal {\r\n        require((_to != address(0)));\r\n        require(_amount <= balances[_from]);\r\n        balances[_from] = balances[_from].sub(_amount);\r\n        balances[_to] = balances[_to].add(_amount);\r\n        emit Transfer(_from, _to, _amount);\r\n    }\n    \n=== Functions that function doTransfer internally calls ===\nfunction add(uint a, uint b) internal pure returns (uint c) {\r\n        c = a + b;\r\n        require(c >= a);\r\n    }\nfunction sub(uint a, uint b) internal pure returns (uint c) {\r\n        require(b <= a);\r\n        c = a - b;\r\n    }",
+    "rewritten_code": {
+      "doTransfer": "function doTransfer(address _from, address _to, uint _amount) internal {\n        require(_to != address(0));\n        require(_to != address(this));\n        require(_amount <= balances[_from]);\n        balances[_from] = balances[_from].sub(_amount);\n        balances[_to] = balances[_to].add(_amount);\n        emit Transfer(_from, _to, _amount);\n    }"
+    }
+  }
+]

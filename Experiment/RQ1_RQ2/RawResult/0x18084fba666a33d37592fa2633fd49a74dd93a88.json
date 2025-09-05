@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "ERC20WithPermit",
+    "function": "approveAndCall",
+    "explanation": "Function returns false on approval failure instead of reverting as specified",
+    "contract_code": "\n=== Implementation of Function approveAndCall(address,uint256,bytes) ===\nfunction approveAndCall(\n        address spender,\n        uint256 amount,\n        bytes memory extraData\n    ) external override returns (bool) {\n        if (approve(spender, amount)) {\n            IReceiveApproval(spender).receiveApproval(\n                msg.sender,\n                amount,\n                address(this),\n                extraData\n            );\n            return true;\n        }\n        return false;\n    }\n    \n=== Functions that function approveAndCall internally calls ===\nfunction approve(address spender, uint256 amount)\n        public\n        override\n        returns (bool)\n    {\n        _approve(msg.sender, spender, amount);\n        return true;\n    }",
+    "rewritten_code": {
+      "approveAndCall": "function approveAndCall(\n        address spender,\n        uint256 amount,\n        bytes memory extraData\n    ) external override returns (bool) {\n        require(approve(spender, amount), 'Approval failed');\n        IReceiveApproval(spender).receiveApproval(\n            msg.sender,\n            amount,\n            address(this),\n            extraData\n        );\n        return true;\n    }"
+    }
+  }
+]

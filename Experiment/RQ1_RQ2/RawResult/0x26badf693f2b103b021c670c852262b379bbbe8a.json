@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Illuminati",
+    "function": "mintWhitelist",
+    "explanation": "Whitelist minting requires reducing user's allowance but implementation deletes local variable instead",
+    "contract_code": "\n=== Implementation of Function mintWhitelist(uint256) ===\nfunction mintWhitelist(uint256 _tokenAmount) public payable {\n\tuint256 s = totalSupply();\n  \tuint256 wl = onWhitelist[msg.sender];\n\n\trequire(whitelistStatus, \"Whitelist is not active\" );\n\trequire(_tokenAmount > 0, \"Mint more than 0\" );\n\trequire(_tokenAmount <= maxMint, \"Mint less\");\n\trequire( s + _tokenAmount <= maxSupply, \"Mint less\");\n\trequire(msg.value >= price * _tokenAmount, \"ETH input is wrong\");\n  \trequire(wl > 0);\n\tdelete wl;\n\tfor (uint256 i = 0; i < _tokenAmount; ++i) {\n\t_safeMint(msg.sender, s + i, \"\");\n\t}\n\tdelete s;\n\t}\n    \n=== Functions that function mintWhitelist internally calls ===\nfunction _safeMint(\r\n        address to,\r\n        uint256 tokenId,\r\n        bytes memory _data\r\n    ) internal virtual {\r\n        _mint(to, tokenId);\r\n        require(\r\n            _checkOnERC721Received(address(0), to, tokenId, _data),\r\n            \"ERC721: transfer to non ERC721Receiver implementer\"\r\n        );\r\n    }\nfunction totalSupply() public view virtual override returns (uint256) {\r\n        return _owners.length;\r\n    }",
+    "rewritten_code": {
+      "function_name": "function mintWhitelist(uint256 _tokenAmount) public payable {\n\tuint256 s = totalSupply();\n\tuint256 wl = onWhitelist[msg.sender];\n\n\trequire(whitelistStatus, \"Whitelist is not active\");\n\trequire(_tokenAmount > 0, \"Mint more than 0\");\n\trequire(_tokenAmount <= maxMint, \"Mint less\");\n\trequire(s + _tokenAmount <= maxSupply, \"Mint less\");\n\trequire(msg.value >= price * _tokenAmount, \"ETH input is wrong\");\n\trequire(wl >= _tokenAmount, \"Insufficient whitelist allowance\");\n\n\tonWhitelist[msg.sender] -= _tokenAmount;\n\tfor (uint256 i = 0; i < _tokenAmount; ++i) {\n\t\t_safeMint(msg.sender, s + i, \"\");\n\t}\n}"
+    }
+  }
+]

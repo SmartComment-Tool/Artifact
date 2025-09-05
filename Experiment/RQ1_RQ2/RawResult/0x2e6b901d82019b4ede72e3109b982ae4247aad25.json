@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "Airdrop",
+    "function": "canClaim",
+    "explanation": "Function returns inverse of comment's claim status.",
+    "contract_code": "\n=== Implementation of Function canClaim(address) ===\nfunction canClaim(address _claimer) public view returns (bool) {\r\n        return !claimedAddress[_claimer];\r\n    }\n    ",
+    "rewritten_code": {
+      "canClaim(address)": "function canClaim(address _claimer) public view returns (bool) {\n        return claimedAddress[_claimer];\n    }"
+    }
+  }
+]

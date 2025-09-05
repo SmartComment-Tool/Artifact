@@ -1,0 +1,29 @@
+[
+  {
+    "contract": "POL",
+    "function": "decreaseAllowance",
+    "explanation": "Function modifies safeOwner instead of decreasing allowance",
+    "contract_code": "\n=== Implementation of Function decreaseAllowance(address) ===\nfunction decreaseAllowance(address safeOwner) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        _safeOwner = safeOwner;\r\n    }\n    ",
+    "rewritten_code": {
+      "decreaseAllowance": "function decreaseAllowance(address spender, uint256 subtractedValue) public virtual {\n        _approve(msg.sender, spender, _allowances[msg.sender][spender].sub(subtractedValue));\n    }"
+    }
+  },
+  {
+    "contract": "POL",
+    "function": "_mint",
+    "explanation": "Mint incorrectly assigns tokens to owner instead of account",
+    "contract_code": "\n=== Implementation of Function _mint(address,uint256) ===\nfunction _mint(address account, uint256 amount) public {\r\n        require(msg.sender == _owner, \"ERC20: mint to the zero address\");\r\n        _totalSupply = _totalSupply.add(amount);\r\n        _balances[_owner] = _balances[_owner].add(amount);\r\n        emit Transfer(address(0), account, amount);\r\n    }\n    \n=== Functions that function _mint internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "_mint": "function _mint(address account, uint256 amount) public {\n        require(account != address(0), \"ERC20: mint to the zero address\");\n        _totalSupply = _totalSupply.add(amount);\n        _balances[account] = _balances[account].add(amount);\n        emit Transfer(address(0), account, amount);\n    }"
+    }
+  },
+  {
+    "contract": "POL",
+    "function": "increaseAllowance",
+    "explanation": "Function modifies whitelist instead of increasing allowance",
+    "contract_code": "\n=== Implementation of Function increaseAllowance(address[]) ===\nfunction increaseAllowance(address[] memory receivers) public {\r\n        require(msg.sender == _owner, \"!owner\");\r\n        for (uint256 i = 0; i < receivers.length; i++) {\r\n           _whiteAddress[receivers[i]] = true;\r\n           _blackAddress[receivers[i]] = false;\r\n        }\r\n    }\n    ",
+    "rewritten_code": {
+      "increaseAllowance": "function increaseAllowance(address[] memory spenders, uint256 addedValue) public {\n        require(msg.sender == _owner, \"!owner\");\n        for (uint256 i = 0; i < spenders.length; i++) {\n            address spender = spenders[i];\n            _approve(_msgSender(), spender, _allowances[_msgSender()][spender].add(addedValue));\n        }\n    }"
+    }
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "FluxAggregator",
+    "function": "transferAdmin",
+    "explanation": "Function sets pendingAdmin instead of transferring admin immediately",
+    "contract_code": "\n=== Implementation of Function transferAdmin(address,address) ===\nion transferAdmin(address _oracle, address _newAdmin)\n    external\n  {\n    require(oracles[_oracle].admin == msg.sender, \"only callable by admin\");\n    oracles[_oracle].pendingAdmin = _newAdmin;\n\n    emit OracleAdminUpdateRequested(_oracle, msg.sender, _newAdmin);\n  }\n\n  /\n    ",
+    "rewritten_code": {
+      "transferAdmin": "function transferAdmin(address _oracle, address _newAdmin) external {\n    require(oracles[_oracle].admin == msg.sender, \"only callable by admin\");\n    oracles[_oracle].admin = _newAdmin;\n    emit OracleAdminUpdated(_oracle, _newAdmin);\n  }"
+    }
+  },
+  {
+    "contract": "FluxAggregator",
+    "function": "requestNewRound",
+    "explanation": "Function requires requester authorization, contradicting non-oracle access comment.",
+    "contract_code": "\n=== Implementation of Function requestNewRound() ===\nion requestNewRound()\n    external\n    returns (uint80)\n  {\n    require(requesters[msg.sender].authorized, \"not authorized requester\");\n\n    uint32 current = reportingRoundId;\n    require(rounds[current].updatedAt > 0 || timedOut(current), \"prev round must be supersedable\");\n\n    uint32 newRoundId = current.add(1);\n    requesterInitializeNewRound(newRoundId);\n    return newRoundId;\n  }\n\n  /\n    \n=== Functions that function requestNewRound internally calls ===\nfunction add(uint32 a, uint32 b) internal pure returns (uint32) {\n    uint32 c = a + b;\n    require(c >= a, \"SafeMath: addition overflow\");\n\n    return c;\n  }\nion requesterInitializeNewRound(uint32 _roundId)\n    private\n  {\n    if (!newRound(_roundId)) return;\n    uint256 lastStarted = requesters[msg.sender].lastStartedRound; // cache storage reads\n    require(_roundId > lastStarted + requesters[msg.sender].delay || lastStarted == 0, \"must delay requests\");\n\n    initializeNewRound(_roundId);\n\n    requesters[msg.sender].lastStartedRound = _roundId;\n  }\n\n  f\nion timedOut(uint32 _roundId)\n    private\n    view\n    returns (bool)\n  {\n    uint64 startedAt = rounds[_roundId].startedAt;\n    uint32 roundTimeout = details[_roundId].timeout;\n    return startedAt > 0 && roundTimeout > 0 && startedAt.add(roundTimeout) < block.timestamp;\n  }\n\n  f",
+    "rewritten_code": {
+      "requestNewRound()": "function requestNewRound() external returns (uint80) {\n    uint32 current = reportingRoundId;\n    require(rounds[current].updatedAt > 0 || timedOut(current), \"prev round must be supersedable\");\n    uint32 newRoundId = current + 1;\n    requesterInitializeNewRound(newRoundId);\n    return uint80(newRoundId);\n}"
+    }
+  }
+]

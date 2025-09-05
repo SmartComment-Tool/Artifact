@@ -1,0 +1,11 @@
+[
+  {
+    "contract": "StandardToken",
+    "function": "increaseApproval",
+    "explanation": "Function allows increasing approval from zero, contradicting comment requiring approve() usage.",
+    "contract_code": "\n=== Implementation of Function increaseApproval(address,uint256) ===\nfunction increaseApproval (address _spender, uint _addedValue) public\r\n    returns (bool success) {\r\n    allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);\r\n    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\r\n    return true;\r\n  }\n    \n=== Functions that function increaseApproval internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n    uint256 c = a + b;\r\n    assert(c >= a);\r\n    return c;\r\n  }",
+    "rewritten_code": {
+      "increaseApproval": "function increaseApproval (address _spender, uint _addedValue) public\n    returns (bool success) {\n    require(allowed[msg.sender][_spender] > 0, \"Use approve for zero allowance\");\n    allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);\n    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\n    return true;\n  }"
+    }
+  }
+]

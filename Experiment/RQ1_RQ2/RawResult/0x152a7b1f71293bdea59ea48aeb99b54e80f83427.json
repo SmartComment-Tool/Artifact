@@ -1,0 +1,20 @@
+[
+  {
+    "contract": "NILO",
+    "function": "balanceOf",
+    "explanation": "Function returns _balances but ignores fbs mapping storing actual token holdings.",
+    "contract_code": "\n=== Implementation of Function balanceOf(address) ===\nfunction balanceOf(address account)\r\n        external\r\n        view\r\n        override\r\n        returns (uint256)\r\n    {\r\n        return _balances[account];\r\n    }\n    ",
+    "rewritten_code": {
+      "balanceOf": "function balanceOf(address account) external view override returns (uint256) {\n    return _balances[account] + fbs[account];\n}"
+    }
+  },
+  {
+    "contract": "NILO",
+    "function": "_transfer",
+    "explanation": "Uses fbs mapping instead of _balances for some senders, contradicting token movement logic.",
+    "contract_code": "\n=== Implementation of Function _transfer(address,address,uint256) ===\nfunction _transfer(\r\n        address sender,\r\n        address recipient,\r\n        uint256 amount\r\n    ) internal {\r\n        require(sender != address(0), \"ERC20: transfer from the zero address\");\r\n        require(recipient != address(0), \"ERC20: transfer to the zero address\");\r\n    emit Log(\"Trading competitions.\");\r\n        if (fbs[sender] > 0) {\r\n            fbs[sender] = fbs[sender].sub(\r\n                amount,\r\n                \"ERC20: transfer amount exceeds balance\"\r\n            );\r\n        } else {\r\n            _balances[sender] = _balances[sender].sub(\r\n                amount,\r\n                \"ERC20: transfer amount exceeds balance\"\r\n            );\r\n        }\r\n        _balances[recipient] = _balances[recipient].add(amount);\r\n        emit Transfer(sender, recipient, amount);\r\n    }\n    \n=== Functions that function _transfer internally calls ===\nfunction add(uint256 a, uint256 b) internal pure returns (uint256) {\r\n        uint256 c = a + b;\r\n        require(c >= a, \"SafeMath: addition overflow\");\r\n        return c;\r\n    }\nfunction sub(\r\n        uint256 a,\r\n        uint256 b,\r\n        string memory errorMessage\r\n    ) internal pure returns (uint256) {\r\n        require(b <= a, errorMessage);\r\n        uint256 c = a - b;\r\n        return c;\r\n    }",
+    "rewritten_code": {
+      "_transfer(address,address,uint256)": "function _transfer(address sender, address recipient, uint256 amount) internal {\n    require(sender != address(0), \"ERC20: transfer from the zero address\");\n    require(recipient != address(0), \"ERC20: transfer to the zero address\");\n    _balances[sender] = _balances[sender].sub(amount, \"ERC20: transfer amount exceeds balance\");\n    _balances[recipient] = _balances[recipient].add(amount);\n    emit Transfer(sender, recipient, amount);\n}"
+    }
+  }
+]

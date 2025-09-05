@@ -1,6 +1,6 @@
 # Artifacts
 
-This repository contains the artifacts for the paper "SmartComment: Detecting Code-Comment Inconsistencies in Smart Contracts by Combining LLM and Program Analysis".
+This repository contains the artifacts for the paper "Detecting Code-Comment Inconsistencies in Smart Contracts by Combining LLM and Program Analysis".
 
 It includes the source code of SmartComment, datasets collected for analysis and experiment, and the results of the experiments.
 
